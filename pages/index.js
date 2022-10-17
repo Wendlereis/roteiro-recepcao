@@ -1,38 +1,27 @@
-import { CurrentTimeIndicator, EditingState, ViewState } from '@devexpress/dx-react-scheduler';
+import { useState } from "react";
 
-import {
-  Scheduler,
-  DayView,
-  Appointments,
+import { ViewState } from "@devexpress/dx-react-scheduler";
 
-} from '@devexpress/dx-react-scheduler-material-ui';
+import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpress/dx-react-scheduler-material-ui";
 
-const currentDate = '2022-09-25';
+const currentDate = "2022-10-16";
 
-const schedulerData = [
-  { startDate: '2022-09-25T09:45', endDate: '2022-09-25T11:00', title: 'Meeting' },
-  { startDate: '2018-11-01T12:00', endDate: '2018-11-01T13:30', title: 'Go to a gym' },
-];
+export default function Roteiro() {
+  const [schedulerData, setSchedulerData] = useState([
+    { startDate: "2022-10-16T21:35", endDate: "2022-10-16T23:00", title: "Meeting" },
+  ]);
 
-export default function Home() {
-  
   return (
-  <div> 
-    <h1>nome do encontro</h1>
-    <p>data</p>
-    <button type="button">novo</button>
-   
-    <Scheduler data={schedulerData}>
-      
+    <div>
+      <Scheduler data={schedulerData}>
+        <ViewState currentDate={currentDate} />
 
-      <DayView startDayHour={9} endDayHour={20} />
-      
-      <Appointments />
-      <EditingState
-              onCommitChanges={()=>{}}
-            />
-      <CurrentTimeIndicator updateInterval={10000} shadePreviousAppointments shadePreviousCells />
-    </Scheduler>
-  </div>  
-  )
+        <DayView startDayHour={0} endDayHour={24} cellDuration={60} />
+
+        <Appointments />
+
+        <CurrentTimeIndicator updateInterval={1000} />
+      </Scheduler>
+    </div>
+  );
 }
