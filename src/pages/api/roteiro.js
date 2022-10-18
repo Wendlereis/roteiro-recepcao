@@ -1,10 +1,8 @@
-import clientPromise from "../../lib/mongodb";
+import { getDatabase } from "../../lib/mongodb";
 
 export async function getEventos() {
   try {
-    const client = await clientPromise;
-
-    const db = client.db("roteiro-recepcao");
+    const db = await getDatabase();
 
     const eventos = await db.collection("eventos").find({}).toArray();
 
@@ -13,11 +11,10 @@ export async function getEventos() {
     console.error(e);
   }
 }
+
 export async function addEvento({ name }) {
   try {
-    const client = await clientPromise;
-
-    const db = client.db("roteiro-recepcao");
+    const db = await getDatabase();
 
     await db.collection("eventos").insertOne({ name });
   } catch (e) {
