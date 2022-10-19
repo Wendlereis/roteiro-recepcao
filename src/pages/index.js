@@ -3,14 +3,15 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { useMutation } from "@tanstack/react-query";
 
-import { Button, Dialog, Fab, Slider, Typography } from "@mui/material";
+import { Button, Dialog, DialogTitle, Fab, IconButton, Typography } from "@mui/material";
+import { DeleteRounded } from "@mui/icons-material";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
 import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpress/dx-react-scheduler-material-ui";
 
 import { Input } from "../components/Input";
 
-import { createEvent, editEvent } from "../api";
+import { createEvent, deleteEvent, editEvent } from "../api";
 
 import { getEventos } from "./api/roteiro";
 import { addMinutes } from "date-fns";
@@ -21,6 +22,8 @@ function Appointment({ children, ...rest }) {
   const [appointment, setAppointment] = useState();
 
   const editEventMutation = useMutation(editEvent);
+
+  const deleteEventMutation = useMutation(deleteEvent);
 
   const methods = useForm();
 
@@ -41,6 +44,10 @@ function Appointment({ children, ...rest }) {
     editEventMutation.mutate(data);
   }
 
+  function handleDelete() {
+    deleteEventMutation.mutate({ id: appointment.id });
+  }
+
   function handleAppointmentSelect(appointment) {
     setAppointment(appointment.data);
   }
@@ -52,6 +59,12 @@ function Appointment({ children, ...rest }) {
       </Appointments.Appointment>
 
       <Dialog open={!!appointment} onClose={handleDialogClose}>
+        <DialogTitle>
+          <IconButton onClick={handleDelete}>
+            <DeleteRounded />
+          </IconButton>
+        </DialogTitle>
+
         <Typography variant="h4">Editar evento</Typography>
 
         <Typography variant="subtitle2">Adicione entrada, palestra ou peças</Typography>
