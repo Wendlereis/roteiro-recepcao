@@ -1,24 +1,84 @@
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-import { Button, Dialog, Fab, Typography } from "@mui/material";
+import { Button, Dialog, Fab, Slider, Typography } from "@mui/material";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
 import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpress/dx-react-scheduler-material-ui";
 
 import { Input } from "../components/Input";
 
-import { createEvent } from "../api";
+import { createEvent, editEvent } from "../api";
 
 import { getEventos } from "./api/roteiro";
+import { addMinutes } from "date-fns";
 
 const currentDate = "2022-10-16";
 
-const Appointment = ({ children, ...rest }) => {
-  return <Appointments.Appointment {...rest}>{children}</Appointments.Appointment>;
-};
+function Appointment({ children, ...rest }) {
+  const [appointment, setAppointment] = useState();
+
+  const editEventMutation = useMutation(editEvent);
+
+  const methods = useForm();
+
+  function handleDialogClose() {
+    setAppointment(undefined);
+  }
+
+  function handleSave(values) {
+    const data = {
+      id: appointment.id,
+      ...values,
+    };
+
+    if (values.minutes !== 0) {
+      data.endDate = addMinutes(new Date(values.endDate), values.minutes);
+    }
+
+    editEventMutation.mutate(data);
+  }
+
+  function handleAppointmentSelect(appointment) {
+    setAppointment(appointment.data);
+  }
+
+  return (
+    <>
+      <Appointments.Appointment onClick={handleAppointmentSelect} {...rest}>
+        {children}
+      </Appointments.Appointment>
+
+      <Dialog open={!!appointment} onClose={handleDialogClose}>
+        <Typography variant="h4">Editar evento</Typography>
+
+        <Typography variant="subtitle2">Adicione entrada, palestra ou peças</Typography>
+
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(handleSave)}>
+            <Input name="title" label="Nome do evento" defaultValue={appointment?.title} />
+
+            <Input.Time name="startDate" label="Início" defaultValue={appointment?.startDate} />
+
+            <Input.Time name="endDate" label="Fim" defaultValue={appointment?.endDate} />
+
+            <Input.Slider name="minutes" label="Minutos" defaultValue={0} />
+
+            <Button variant="outlined" onClick={handleDialogClose}>
+              Cancelar
+            </Button>
+
+            <Button type="submit" variant="contained">
+              Salvar
+            </Button>
+          </form>
+        </FormProvider>
+      </Dialog>
+    </>
+  );
+}
 
 export default function Roteiro({ eventos }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,10 +89,8 @@ export default function Roteiro({ eventos }) {
 
   const [schedulerData, setSchedulerData] = useState(() =>
     eventos.map((evento, index) => ({
-      id: evento.id,
-      startDate: evento.start,
-      endDate: evento.end,
-      title: evento.name,
+      ...evento,
+      id: evento._id,
     }))
   );
 
@@ -67,11 +125,11 @@ export default function Roteiro({ eventos }) {
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(handleSave)}>
-            <Input name="name" label="Nome do evento" />
+            <Input name="title" label="Nome do evento" />
 
-            <Input.Time name="start" label="Início" />
+            <Input.Time name="startDate" label="Início" />
 
-            <Input.Time name="end" label="Fim" />
+            <Input.Time name="endDate" label="Fim" />
 
             <Button variant="outlined" onClick={handleDialogClose}>
               Cancelar

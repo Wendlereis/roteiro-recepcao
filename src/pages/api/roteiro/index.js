@@ -1,4 +1,4 @@
-import { getDatabase } from "../../lib/mongodb";
+import { getDatabase } from "../../../lib/mongodb";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
@@ -26,11 +26,11 @@ export async function getEventos() {
   }
 }
 
-export async function addEvento({ name, start, end }) {
+export async function addEvento({ title, startDate, endDate }) {
   try {
     const db = await getDatabase();
 
-    await db.collection("eventos").insertOne({ name, start, end });
+    await db.collection("eventos").insertOne({ title, startDate, endDate });
   } catch (e) {
     console.error(e);
   }
