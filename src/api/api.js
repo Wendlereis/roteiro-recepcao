@@ -1,7 +1,11 @@
 import axios from "axios";
 
-export function createEvent({ name, start, end }) {
-  return axios.post("/api/roteiro", { name, start, end });
+export function createEvent({ title, startDate, endDate }) {
+  return axios.post("/api/roteiro", { title, startDate, endDate });
+}
+
+export function editEvent({ title, startDate, endDate, id }) {
+  return axios.put(`/api/roteiro/${id}`, { title, startDate, endDate });
 }
 
 export function getEvent() {
