@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const event = req.body;
   const { id } = req.query;
 
-  if (req.method === "POST") {
+  if (req.method === "PUT") {
     await editEvento(event, id);
   }
 

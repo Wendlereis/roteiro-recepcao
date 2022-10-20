@@ -11,7 +11,7 @@ import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpr
 
 import { Input } from "../components/Input";
 
-import { createEvent, deleteEvent, editEvent } from "../api";
+import { createEvent, deleteEvent, editEvent, editEventsDuration } from "../api";
 
 import { getEventos } from "./api/roteiro";
 import { addMinutes } from "date-fns";
@@ -25,23 +25,34 @@ function Appointment({ children, ...rest }) {
 
   const deleteEventMutation = useMutation(deleteEvent);
 
+  const editEventsDurationMutation = useMutation(editEventsDuration);
+
   const methods = useForm();
 
   function handleDialogClose() {
     setAppointment(undefined);
   }
 
-  function handleSave(values) {
+  async function handleSave(values) {
     const data = {
       id: appointment.id,
       ...values,
     };
 
     if (values.minutes !== 0) {
-      data.endDate = addMinutes(new Date(values.endDate), values.minutes);
-    }
+      console.log("COM MINUTOS");
+      await editEventMutation.mutateAsync({
+        ...data,
+        endDate: addMinutes(new Date(values.endDate), values.minutes),
+      });
 
-    editEventMutation.mutate(data);
+      const { endDate, minutes } = data;
+
+      await editEventsDurationMutation.mutateAsync({ endDate, minutes });
+    } else {
+      console.log("SEM MINUTOS");
+      editEventMutation.mutate(data);
+    }
   }
 
   function handleDelete() {
@@ -124,7 +135,7 @@ export default function Roteiro({ eventos }) {
       <Scheduler data={schedulerData}>
         <ViewState />
 
-        <DayView startDayHour={0} endDayHour={24} cellDuration={60} />
+        <DayView startDayHour={5} endDayHour={22} cellDuration={15} />
 
         <Appointments appointmentComponent={Appointment} />
 
