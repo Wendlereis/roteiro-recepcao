@@ -3,11 +3,9 @@ import { addMinutes } from "date-fns";
 
 import { getDatabase } from "../../../lib/mongodb";
 
-const asyncForEach = async (array, callback) => {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-};
+function removeSeconds(date) {
+  return new Date(date.setSeconds(0, 0));
+}
 
 export default async function handler(req, res) {
   const event = req.body;
@@ -54,43 +52,31 @@ export async function addEvento({ title, startDate, endDate }) {
 }
 
 export async function editEventsDuration({ endDate, minutes }) {
-  console.log({ endDate, minutes });
-
   try {
     const db = await getDatabase();
 
     const eventos = await db
       .collection("eventos")
-      .find({ startDate: { $gte: new Date(endDate) } })
+      .find({ startDate: { $gte: endDate } })
       .sort({ startDate: 1 })
       .toArray();
 
-    console.log({ eventos });
-
     const updatedEventDurations = eventos.map((event) => ({
       ...event,
-      startDate: addMinutes(new Date(event.startDate), minutes),
-      endDate: addMinutes(new Date(event.endDate), minutes),
+      startDate: addMinutes(removeSeconds(new Date(event.startDate)), minutes).toISOString(),
+      endDate: addMinutes(removeSeconds(new Date(event.endDate)), minutes).toISOString(),
     }));
 
-    console.log({ updatedEventDurations });
+    for (let index = 0; index < updatedEventDurations.length; index++) {
+      const { _id, ...restEvent } = updatedEventDurations[index];
 
-    // const asyncForEach = async () => {
-    //   for (let index = 0; index < updatedEventDurations.length; index++) {
-    //     const { _id, ...restEvent } = updatedEventDurations[index];
-
-    //     console.log({ restEvent });
-
-    //     await db.collection("eventos").updateOne(
-    //       { _id },
-    //       {
-    //         $set: restEvent,
-    //       }
-    //     );
-    //   }
-    // };
-
-    // await asyncForEach();
+      await db.collection("eventos").updateOne(
+        { _id },
+        {
+          $set: restEvent,
+        }
+      );
+    }
   } catch (e) {
     console.error(e);
   }

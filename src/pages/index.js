@@ -18,6 +18,10 @@ import { addMinutes } from "date-fns";
 
 const currentDate = "2022-10-16";
 
+function removeSeconds(date) {
+  return new Date(date.setSeconds(0, 0));
+}
+
 function Appointment({ children, ...rest }) {
   const [appointment, setAppointment] = useState();
 
@@ -35,22 +39,22 @@ function Appointment({ children, ...rest }) {
 
   async function handleSave(values) {
     const data = {
-      id: appointment.id,
       ...values,
+      id: appointment.id,
+      startDate: removeSeconds(new Date(values.startDate)),
+      endDate: removeSeconds(new Date(values.endDate)),
     };
 
-    if (values.minutes !== 0) {
-      console.log("COM MINUTOS");
+    if (data.minutes !== 0) {
       await editEventMutation.mutateAsync({
         ...data,
-        endDate: addMinutes(new Date(values.endDate), values.minutes),
+        endDate: addMinutes(data.endDate, data.minutes),
       });
 
       const { endDate, minutes } = data;
 
       await editEventsDurationMutation.mutateAsync({ endDate, minutes });
     } else {
-      console.log("SEM MINUTOS");
       editEventMutation.mutate(data);
     }
   }
@@ -127,7 +131,13 @@ export default function Roteiro({ eventos }) {
   }
 
   function handleSave(values) {
-    createEventMutation.mutate(values);
+    const data = {
+      ...values,
+      startDate: removeSeconds(values.startDate),
+      endDate: removeSeconds(values.endDate),
+    };
+
+    createEventMutation.mutate(data);
   }
 
   return (
