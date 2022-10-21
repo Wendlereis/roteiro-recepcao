@@ -11,7 +11,7 @@ export function Input({ name, label, defaultValue, type }) {
       name={name}
       defaultValue={defaultValue}
       control={control}
-      render={({ field }) => <TextField label={label} type={type} {...field} />}
+      render={({ field }) => <TextField sx={{ mt: 3 }} label={label} type={type} {...field} fullWidth />}
     />
   );
 }
@@ -30,7 +30,7 @@ Input.Time = function InputTime({ name, label, defaultValue }) {
           onChange={onChange}
           value={value}
           ampm={false}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => <TextField sx={{ mt: 3 }} {...params} fullWidth />}
         />
       )}
     />
@@ -46,7 +46,17 @@ Input.Slider = function InputTime({ name, label, defaultValue }) {
       defaultValue={defaultValue}
       control={control}
       render={({ field: { onChange, value } }) => (
-        <Slider min={-30} max={30} step={5} onChange={onChange} value={value} marks valueLabelDisplay="auto" />
+        <Slider
+          sx={{ mt: 3 }}
+          min={-30}
+          max={30}
+          step={5}
+          onChange={onChange}
+          value={value}
+          valueLabelDisplay="auto"
+          marks
+          fullWidth
+        />
       )}
     />
   );
