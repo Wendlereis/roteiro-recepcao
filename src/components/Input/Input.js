@@ -47,7 +47,6 @@ Input.Slider = function InputTime({ name, label, defaultValue }) {
       control={control}
       render={({ field: { onChange, value } }) => (
         <Slider
-          sx={{ mt: 3 }}
           min={-30}
           max={30}
           step={5}
