@@ -1,26 +1,26 @@
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
+import Link from "next/link";
+
 import { useMutation } from "@tanstack/react-query";
 
 import { Button, Dialog, DialogTitle, Fab, IconButton, Typography } from "@mui/material";
-import { DeleteRounded } from "@mui/icons-material";
+import { DeleteRounded, AddRounded } from "@mui/icons-material";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
 import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpress/dx-react-scheduler-material-ui";
 
 import { Input } from "../components/Input";
 
-import { createEvent, deleteEvent, editEvent, editEventsDuration } from "../api";
+import { deleteEvent, editEvent, editEventsDuration } from "../api";
 
 import { getEventos } from "./api/roteiro";
 import { addMinutes } from "date-fns";
 
-const currentDate = "2022-10-16";
+import { removeSeconds } from "../ultis/date";
 
-function removeSeconds(date) {
-  return new Date(date.setSeconds(0, 0));
-}
+const currentDate = "2022-10-16";
 
 function Appointment({ children, ...rest }) {
   const [appointment, setAppointment] = useState();
@@ -109,76 +109,23 @@ function Appointment({ children, ...rest }) {
 }
 
 export default function Roteiro({ eventos }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const createEventMutation = useMutation(createEvent);
-
-  const methods = useForm();
-
-  const [schedulerData, setSchedulerData] = useState(() =>
-    eventos.map((evento, index) => ({
-      ...evento,
-      id: evento._id,
-    }))
-  );
-
-  function handleAppointmentClick() {
-    setIsOpen(true);
-  }
-
-  function handleDialogClose() {
-    setIsOpen(false);
-  }
-
-  function handleSave(values) {
-    const data = {
-      ...values,
-      startDate: removeSeconds(values.startDate),
-      endDate: removeSeconds(values.endDate),
-    };
-
-    createEventMutation.mutate(data);
-  }
-
   return (
     <div>
-      <Scheduler data={schedulerData}>
+      <Scheduler data={eventos}>
         <ViewState />
 
         <DayView startDayHour={5} endDayHour={22} cellDuration={15} />
 
         <Appointments appointmentComponent={Appointment} />
 
-        <CurrentTimeIndicator updateInterval={1000} />
+        <CurrentTimeIndicator updateInterval={60000} />
       </Scheduler>
 
-      <Dialog open={isOpen} onClose={handleDialogClose}>
-        <Typography variant="h4">Criar evento</Typography>
-
-        <Typography variant="subtitle2">Adicione entrada, palestra ou peças</Typography>
-
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(handleSave)}>
-            <Input name="title" label="Nome do evento" />
-
-            <Input.Time name="startDate" label="Início" />
-
-            <Input.Time name="endDate" label="Fim" />
-
-            <Button variant="outlined" onClick={handleDialogClose}>
-              Cancelar
-            </Button>
-
-            <Button type="submit" variant="contained">
-              Salvar
-            </Button>
-          </form>
-        </FormProvider>
-      </Dialog>
-
-      <Fab color="primary" variant="extended" onClick={handleAppointmentClick}>
-        Criar evento
-      </Fab>
+      <Link href="/create">
+        <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="primary">
+          <AddRounded />
+        </Fab>
+      </Link>
     </div>
   );
 }
