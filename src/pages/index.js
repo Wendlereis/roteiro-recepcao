@@ -109,18 +109,9 @@ function Appointment({ children, ...rest }) {
 }
 
 export default function Roteiro({ eventos }) {
-  const [schedulerData, setSchedulerData] = useState(() =>
-    eventos.map((evento, index) => ({
-      ...evento,
-      id: evento._id,
-    }))
-  );
-
-  function handleAppointmentClick() {}
-
   return (
     <div>
-      <Scheduler data={schedulerData}>
+      <Scheduler data={eventos}>
         <ViewState />
 
         <DayView startDayHour={5} endDayHour={22} cellDuration={15} />
@@ -131,7 +122,7 @@ export default function Roteiro({ eventos }) {
       </Scheduler>
 
       <Link href="/create">
-        <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} variant="extended" color="primary">
+        <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="primary">
           <AddRounded />
         </Fab>
       </Link>
