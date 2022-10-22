@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -11,12 +13,16 @@ import { useMutation } from "@tanstack/react-query";
 import { removeSeconds } from "../../ultis/date";
 
 import { EventForm } from "../../components/EventForm";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
 import { deleteEvent, editEvent, editEventsDuration } from "../../api";
 
 import { getEventById } from "../api/roteiro";
 
 export default function Edit({ event }) {
+  const [values, setValues] = useState();
+  const [isDialogOpen, setIsDialogOpen] = useState();
+
   const { push } = useRouter();
 
   const editEventMutation = useMutation(editEvent);
@@ -25,7 +31,16 @@ export default function Edit({ event }) {
 
   const editEventsDurationMutation = useMutation(editEventsDuration);
 
-  async function handleSave(values) {
+  function toggleDialog() {
+    setIsDialogOpen(!isDialogOpen);
+  }
+
+  function handleSubmit(values) {
+    setValues(values);
+    setIsDialogOpen(!isDialogOpen);
+  }
+
+  async function handleSave() {
     const data = {
       ...values,
       id: event._id,
@@ -66,9 +81,11 @@ export default function Edit({ event }) {
         <Typography color="text.secondary">Altere acessos, palestras ou peças</Typography>
 
         <Box mt={1}>
-          <EventForm mode="edit" onSubmit={handleSave} defaultValues={event} />
+          <EventForm mode="edit" onSubmit={handleSubmit} defaultValues={event} />
         </Box>
       </Box>
+
+      <ConfirmationDialog open={isDialogOpen} onConfirm={handleSave} onClose={toggleDialog} />
     </Box>
   );
 }
