@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export function getEvent() {
+export function getEvents() {
   return axios.get("/api/roteiro");
 }
 

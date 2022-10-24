@@ -8,22 +8,28 @@ import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpr
 
 import { AppointmentDetail } from "../components/AppointmentDetail";
 
-import { getEventos } from "./api/roteiro";
+import { useQuery } from "@tanstack/react-query";
+
+import { getEvents } from "../api";
 
 const currentDate = "2022-10-16";
 
-export default function Roteiro({ eventos }) {
+export default function Schedule() {
+  const { data: getEventsResponse } = useQuery(["events"], getEvents);
+
   return (
     <div>
-      <Scheduler data={eventos}>
-        <ViewState />
+      {getEventsResponse?.data && (
+        <Scheduler data={getEventsResponse?.data}>
+          <ViewState />
 
-        <DayView startDayHour={5} endDayHour={22} cellDuration={15} />
+          <DayView startDayHour={5} endDayHour={22} cellDuration={15} />
 
-        <Appointments appointmentComponent={AppointmentDetail} />
+          <Appointments appointmentComponent={AppointmentDetail} />
 
-        <CurrentTimeIndicator updateInterval={60000} />
-      </Scheduler>
+          <CurrentTimeIndicator updateInterval={60000} />
+        </Scheduler>
+      )}
 
       <Link href="/create">
         <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="primary">
@@ -32,14 +38,4 @@ export default function Roteiro({ eventos }) {
       </Link>
     </div>
   );
-}
-
-export async function getServerSideProps() {
-  const eventos = await getEventos();
-
-  return {
-    props: {
-      eventos,
-    },
-  };
 }
