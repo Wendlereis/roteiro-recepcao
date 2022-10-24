@@ -6,9 +6,12 @@ import { AddRounded } from "@mui/icons-material";
 import { ViewState } from "@devexpress/dx-react-scheduler";
 import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpress/dx-react-scheduler-material-ui";
 
-import { AppointmentDetail } from "../components/AppointmentDetail";
-
 import { useQuery } from "@tanstack/react-query";
+
+import { DayViewCell } from "../components/DayViewCell";
+import { DayViewLabel } from "../components/DayViewLabel";
+import { AppointmentItem } from "../components/AppointmentItem";
+import { AppointmentContent } from "../components/AppointmentContent";
 
 import { getEvents } from "../api";
 
@@ -23,9 +26,15 @@ export default function Schedule() {
         <Scheduler data={getEventsResponse?.data}>
           <ViewState />
 
-          <DayView startDayHour={5} endDayHour={22} cellDuration={15} />
+          <DayView
+            startDayHour={5}
+            endDayHour={22}
+            cellDuration={15}
+            dayScaleCellComponent={DayViewCell}
+            timeScaleLabelComponent={DayViewLabel}
+          />
 
-          <Appointments appointmentComponent={AppointmentDetail} />
+          <Appointments appointmentComponent={AppointmentItem} appointmentContentComponent={AppointmentContent} />
 
           <CurrentTimeIndicator updateInterval={60000} />
         </Scheduler>

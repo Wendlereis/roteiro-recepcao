@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { addMinutes } from "date-fns";
 
 import { getDatabase } from "../../../lib/mongodb";

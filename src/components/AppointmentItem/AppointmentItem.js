@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { Appointments } from "@devexpress/dx-react-scheduler-material-ui";
 
-export function AppointmentDetail({ children, ...rest }) {
+export function AppointmentItem({ children, ...rest }) {
   const { push } = useRouter();
 
   function handleAppointmentSelect({ data }) {
