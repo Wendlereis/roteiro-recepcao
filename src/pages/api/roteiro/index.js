@@ -41,18 +41,6 @@ export async function getEventos() {
   }
 }
 
-export async function getEventById(id) {
-  try {
-    const db = await getDatabase();
-
-    const event = await db.collection("eventos").findOne({ _id: ObjectId(id) });
-
-    return JSON.parse(JSON.stringify(event));
-  } catch (e) {
-    console.error(e);
-  }
-}
-
 export async function addEvento({ title, startDate, endDate }) {
   try {
     const db = await getDatabase();
