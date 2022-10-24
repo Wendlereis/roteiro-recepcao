@@ -8,7 +8,7 @@ import { addMinutes } from "date-fns";
 import { ArrowBackRounded } from "@mui/icons-material";
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { removeSeconds } from "../../ultis/date";
 
@@ -17,13 +17,15 @@ import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
 import { deleteEvent, editEvent, editEventsDuration } from "../../api";
 
-import { getEventById } from "../api/roteiro";
+import { getEventById } from "../../api";
 
-export default function Edit({ event }) {
+export default function Edit() {
   const [values, setValues] = useState();
   const [isDialogOpen, setIsDialogOpen] = useState();
 
-  const { push } = useRouter();
+  const { push, query } = useRouter();
+
+  const { data: getEventResponse } = useQuery(["event", query.id], () => getEventById({ id: query.id }));
 
   const editEventMutation = useMutation(editEvent);
 
@@ -43,7 +45,7 @@ export default function Edit({ event }) {
   async function handleSave() {
     const data = {
       ...values,
-      id: event._id,
+      id: getEventResponse.data._id,
       startDate: removeSeconds(new Date(values.startDate)),
       endDate: removeSeconds(new Date(values.endDate)),
     };
@@ -80,22 +82,14 @@ export default function Edit({ event }) {
         <Typography variant="h3">Editar evento</Typography>
         <Typography color="text.secondary">Altere acessos, palestras ou peças</Typography>
 
-        <Box mt={1}>
-          <EventForm mode="edit" onSubmit={handleSubmit} defaultValues={event} />
-        </Box>
+        {getEventResponse?.data && (
+          <Box mt={1}>
+            <EventForm mode="edit" onSubmit={handleSubmit} defaultValues={getEventResponse?.data} />
+          </Box>
+        )}
       </Box>
 
       <ConfirmationDialog open={isDialogOpen} onConfirm={handleSave} onClose={toggleDialog} />
     </Box>
   );
-}
-
-export async function getServerSideProps(context) {
-  const { params } = context;
-
-  const event = await getEventById(params.id);
-
-  return {
-    props: { event },
-  };
 }

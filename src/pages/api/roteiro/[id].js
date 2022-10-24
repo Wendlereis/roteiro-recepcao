@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+
 import { getDatabase } from "../../../lib/mongodb";
 
 export default async function handler(req, res) {
@@ -13,7 +14,25 @@ export default async function handler(req, res) {
     await deleteEvento(id);
   }
 
-  res.send();
+  if (req.method === "GET") {
+    const event = await getEventById(id);
+
+    return res.json(event);
+  }
+
+  return res.send();
+}
+
+export async function getEventById(id) {
+  try {
+    const db = await getDatabase();
+
+    const event = await db.collection("eventos").findOne({ _id: ObjectId(id) });
+
+    return JSON.parse(JSON.stringify(event));
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 export async function editEvento({ title, startDate, endDate }, id) {

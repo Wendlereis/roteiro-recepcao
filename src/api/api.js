@@ -4,6 +4,10 @@ export function getEvents() {
   return axios.get("/api/roteiro");
 }
 
+export function getEventById({ id }) {
+  return axios.get(`/api/roteiro/${id}`);
+}
+
 export function createEvent({ title, startDate, endDate }) {
   return axios.post("/api/roteiro", { title, startDate, endDate });
 }
