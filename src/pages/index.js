@@ -27,8 +27,8 @@ export default function Schedule() {
           <ViewState />
 
           <DayView
-            startDayHour={5}
-            endDayHour={22}
+            startDayHour={6.75}
+            endDayHour={20.5}
             cellDuration={15}
             dayScaleCellComponent={DayViewCell}
             timeScaleLabelComponent={DayViewLabel}
