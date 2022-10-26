@@ -13,7 +13,7 @@ import { DayViewLabel } from "../components/DayViewLabel";
 import { AppointmentItem } from "../components/AppointmentItem";
 import { AppointmentContent } from "../components/AppointmentContent";
 
-import { getEvents } from "../api";
+import { getEvents } from "../api/event";
 
 const currentDate = "2022-10-16";
 

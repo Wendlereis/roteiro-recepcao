@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 import { useMutation } from "@tanstack/react-query";
 
-import { createEvent } from "../api";
+import { createEvent } from "../api/event";
 
 import { removeSeconds } from "../ultis/date";
 import { EventForm } from "../components/EventForm";

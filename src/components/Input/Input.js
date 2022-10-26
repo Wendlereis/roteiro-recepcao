@@ -3,7 +3,7 @@ import { TimePicker } from "@mui/x-date-pickers";
 
 import { Controller, useFormContext } from "react-hook-form";
 
-export function Input({ name, label, defaultValue, type }) {
+export function Input({ name, label, defaultValue, type, select, children }) {
   const { control } = useFormContext();
 
   return (
@@ -11,7 +11,11 @@ export function Input({ name, label, defaultValue, type }) {
       name={name}
       defaultValue={defaultValue}
       control={control}
-      render={({ field }) => <TextField sx={{ mt: 3 }} label={label} type={type} {...field} fullWidth />}
+      render={({ field }) => (
+        <TextField sx={{ mt: 3 }} label={label} type={type} select={select} {...field} fullWidth>
+          {children}
+        </TextField>
+      )}
     />
   );
 }

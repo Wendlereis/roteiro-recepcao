@@ -8,12 +8,13 @@ export function getEventById({ id }) {
   return axios.get(`/api/roteiro/${id}`);
 }
 
-export function createEvent({ title, startDate, endDate }) {
-  return axios.post("/api/roteiro", { title, startDate, endDate });
+export function createEvent(event) {
+  return axios.post("/api/roteiro", event);
 }
 
-export function editEvent({ title, startDate, endDate, id, minutes }) {
-  return axios.put(`/api/roteiro/${id}`, { title, startDate, endDate, minutes });
+export function editEvent(event) {
+  const { id, ...restEvent } = event;
+  return axios.put(`/api/roteiro/${id}`, restEvent);
 }
 
 export function editEventsDuration({ endDate, minutes }) {

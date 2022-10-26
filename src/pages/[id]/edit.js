@@ -15,9 +15,7 @@ import { removeSeconds } from "../../ultis/date";
 import { EventForm } from "../../components/EventForm";
 import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
-import { deleteEvent, editEvent, editEventsDuration } from "../../api";
-
-import { getEventById } from "../../api";
+import { deleteEvent, editEvent, editEventsDuration, getEventById } from "../../api/event";
 
 export default function Edit() {
   const [values, setValues] = useState();
@@ -49,6 +47,8 @@ export default function Edit() {
       startDate: removeSeconds(new Date(values.startDate)),
       endDate: removeSeconds(new Date(values.endDate)),
     };
+
+    console.log({ data });
 
     if (data.minutes !== 0) {
       await editEventMutation.mutateAsync({
