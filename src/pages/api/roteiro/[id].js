@@ -35,16 +35,11 @@ export async function getEventById(id) {
   }
 }
 
-export async function editEvento({ title, startDate, endDate }, id) {
+export async function editEvento(event, id) {
   try {
     const db = await getDatabase();
 
-    await db.collection("eventos").updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: { title, startDate, endDate },
-      }
-    );
+    await db.collection("eventos").updateOne({ _id: new ObjectId(id) }, { $set: event });
   } catch (e) {
     console.error(e);
   }

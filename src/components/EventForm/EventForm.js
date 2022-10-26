@@ -1,11 +1,17 @@
 import { FormProvider, useForm } from "react-hook-form";
 
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+
+import { Box, Button, Stack, Typography, MenuItem } from "@mui/material";
+
+import { getCategories } from "../../api/category";
 
 import { Input } from "../Input";
 
 export function EventForm({ mode = "create", onSubmit, defaultValues }) {
   const methods = useForm();
+
+  const { data: getCategoriesResponse } = useQuery(["categories"], getCategories);
 
   function getDefaultValueOrNull(value) {
     return value ? value : null;
@@ -15,6 +21,14 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Input name="title" label="Nome do evento" defaultValue={getDefaultValueOrNull(defaultValues?.title)} />
+
+        <Input name="color" label="Categoria" defaultValue={getDefaultValueOrNull(defaultValues?.color)} select>
+          {getCategoriesResponse?.data?.map((category) => (
+            <MenuItem key={category.color} value={category.color}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </Input>
 
         <Input.Time name="startDate" label="Início" defaultValue={getDefaultValueOrNull(defaultValues?.startDate)} />
 

@@ -40,11 +40,11 @@ export async function getEventos() {
   }
 }
 
-export async function addEvento({ title, startDate, endDate }) {
+export async function addEvento(event) {
   try {
     const db = await getDatabase();
 
-    await db.collection("eventos").insertOne({ title, startDate, endDate });
+    await db.collection("eventos").insertOne(event);
   } catch (e) {
     console.error(e);
   }
