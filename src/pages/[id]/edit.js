@@ -10,7 +10,7 @@ import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { removeSeconds } from "../../ultis/date";
+import { buildEventDate, removeSeconds } from "../../ultis/date";
 
 import { EventForm } from "../../components/EventForm";
 import { ConfirmationDialog } from "../../components/ConfirmationDialog";
@@ -44,11 +44,9 @@ export default function Edit() {
     const data = {
       ...values,
       id: getEventResponse.data._id,
-      startDate: removeSeconds(new Date(values.startDate)),
-      endDate: removeSeconds(new Date(values.endDate)),
+      startDate: buildEventDate(values.day, removeSeconds(new Date(values.startDate))),
+      endDate: buildEventDate(values.day, removeSeconds(new Date(values.endDate))),
     };
-
-    console.log({ data });
 
     if (data.minutes !== 0) {
       await editEventMutation.mutateAsync({

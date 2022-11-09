@@ -8,6 +8,8 @@ import { getCategories } from "../../api/category";
 
 import { Input } from "../Input";
 
+import { edition } from "../../ultis/date";
+
 export function EventForm({ mode = "create", onSubmit, defaultValues }) {
   const methods = useForm();
 
@@ -28,6 +30,16 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
               {category.name}
             </MenuItem>
           ))}
+        </Input>
+
+        <Input name="day" label="Dia" defaultValue={getDefaultValueOrNull(defaultValues?.day)} select>
+          <MenuItem key={edition.startDate} value={edition.startDate}>
+            Sábado
+          </MenuItem>
+
+          <MenuItem key={edition.endDate} value={edition.endDate}>
+            Domingo
+          </MenuItem>
         </Input>
 
         <Input.Time name="startDate" label="Início" defaultValue={getDefaultValueOrNull(defaultValues?.startDate)} />
