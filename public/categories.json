@@ -1,0 +1,38 @@
+[
+  {    
+    "name": "Acessos",
+    "color": "#27bde3"
+  },
+  {
+    "name": "Palestra",
+    "color": "#b5513f"
+  },
+  {    
+    "name": "Apresentadores",
+    "color": "#142b9c"
+  },
+  {    
+    "name": "Alimentação",
+    "color": "#7046e3"
+  },
+  {    
+    "name": "Teatro",
+    "color": "#308034"
+  },
+  {    
+    "name": "Círculo",
+    "color": "#b3601d"
+  },
+  {    
+    "name": "Missa",
+    "color": "#6e0936"
+  },
+  {    
+    "name": "Equipes",
+    "color": "#ecc62b"
+  },
+  {    
+    "name": "Outros",
+    "color": "#525252"
+  }
+]

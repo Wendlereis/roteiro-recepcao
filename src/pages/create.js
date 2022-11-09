@@ -6,10 +6,11 @@ import { useRouter } from "next/router";
 
 import { useMutation } from "@tanstack/react-query";
 
+import { EventForm } from "../components/EventForm";
+
 import { createEvent } from "../api/event";
 
-import { removeSeconds } from "../ultis/date";
-import { EventForm } from "../components/EventForm";
+import { buildEventDate, removeSeconds } from "../ultis/date";
 
 export default function Create() {
   const { push } = useRouter();
@@ -19,8 +20,8 @@ export default function Create() {
   async function handleSave(values) {
     const data = {
       ...values,
-      startDate: removeSeconds(values.startDate),
-      endDate: removeSeconds(values.endDate),
+      startDate: buildEventDate(values.day, removeSeconds(values.startDate)),
+      endDate: buildEventDate(values.day, removeSeconds(values.endDate)),
     };
 
     await createEventMutation.mutateAsync(data);

@@ -1,6 +1,8 @@
+import { useMemo, useState } from "react";
+
 import Link from "next/link";
 
-import { Fab } from "@mui/material";
+import { Fab, MenuItem, Tab, Tabs } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
@@ -15,16 +17,27 @@ import { AppointmentContent } from "../components/AppointmentContent";
 
 import { getEvents } from "../api/event";
 
-const currentDate = "2022-10-16";
+import { edition } from "../ultis/date";
 
 export default function Schedule() {
   const { data: getEventsResponse } = useQuery(["events"], getEvents);
 
+  const [selectedTab, setSelectedTab] = useState(edition.startDate);
+
+  function handleTabChange(_, tab) {
+    setSelectedTab(tab);
+  }
+
   return (
     <div>
+      <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth">
+        <Tab label="Sábado" value={edition.startDate} />
+        <Tab label="Domingo" value={edition.endDate} />
+      </Tabs>
+
       {getEventsResponse?.data && (
         <Scheduler data={getEventsResponse?.data}>
-          <ViewState />
+          <ViewState currentDate={selectedTab} />
 
           <DayView
             startDayHour={6.75}
