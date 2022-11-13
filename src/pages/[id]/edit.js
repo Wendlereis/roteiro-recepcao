@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import { addMinutes } from "date-fns";
 
-import { ArrowBackRounded } from "@mui/icons-material";
+import { ArrowBackRounded, DeleteRounded } from "@mui/icons-material";
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -16,10 +16,12 @@ import { EventForm } from "../../components/EventForm";
 import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
 import { deleteEvent, editEvent, editEventsDuration, getEventById } from "../../api/event";
+import { DeleteEventDialog } from "../../components/DeleteEventDialog";
 
 export default function Edit() {
   const [values, setValues] = useState();
   const [isDialogOpen, setIsDialogOpen] = useState();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState();
 
   const { push, query } = useRouter();
 
@@ -35,9 +37,21 @@ export default function Edit() {
     setIsDialogOpen(!isDialogOpen);
   }
 
+  function toggleDeleteDialog() {
+    setIsDeleteDialogOpen(!isDeleteDialogOpen);
+  }
+
   function handleSubmit(values) {
     setValues(values);
     setIsDialogOpen(!isDialogOpen);
+  }
+
+  async function handleDeleteOnConfirm() {
+    await deleteEventMutation.mutateAsync({
+      id: getEventResponse.data._id,
+    });
+
+    push("/");
   }
 
   async function handleSave() {
@@ -68,11 +82,17 @@ export default function Edit() {
     <Box>
       <AppBar position="static">
         <Toolbar>
-          <Link href="/">
-            <IconButton component="a" size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
-              <ArrowBackRounded />
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <Link href="/">
+              <IconButton component="a" size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
+                <ArrowBackRounded />
+              </IconButton>
+            </Link>
+
+            <IconButton onClick={toggleDeleteDialog} size="large" color="inherit">
+              <DeleteRounded />
             </IconButton>
-          </Link>
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -88,6 +108,8 @@ export default function Edit() {
       </Box>
 
       <ConfirmationDialog open={isDialogOpen} onConfirm={handleSave} onClose={toggleDialog} />
+
+      <DeleteEventDialog open={isDeleteDialogOpen} onConfirm={handleDeleteOnConfirm} onClose={toggleDeleteDialog} />
     </Box>
   );
 }
