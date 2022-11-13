@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import Link from "next/link";
 
-import { Fab, MenuItem, Tab, Tabs } from "@mui/material";
+import { Fab, Tab, Tabs } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
@@ -18,11 +18,14 @@ import { AppointmentContent } from "../components/AppointmentContent";
 import { getEvents } from "../api/event";
 
 import { edition } from "../ultis/date";
+import { usePermission } from "../hook/usePermission";
 
 export default function Schedule() {
   const { data: getEventsResponse } = useQuery(["events"], getEvents);
 
   const [selectedTab, setSelectedTab] = useState(edition.startDate);
+
+  const isAdmin = usePermission();
 
   function handleTabChange(_, tab) {
     setSelectedTab(tab);
@@ -53,11 +56,13 @@ export default function Schedule() {
         </Scheduler>
       )}
 
-      <Link href="/create">
-        <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="primary">
-          <AddRounded />
-        </Fab>
-      </Link>
+      {isAdmin && (
+        <Link href="/create">
+          <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="primary">
+            <AddRounded />
+          </Fab>
+        </Link>
+      )}
     </div>
   );
 }
