@@ -43,9 +43,9 @@ export default function Schedule() {
           <ViewState currentDate={selectedTab} />
 
           <DayView
-            startDayHour={6.75}
+            startDayHour={7}
             endDayHour={20.5}
-            cellDuration={15}
+            cellDuration={10}
             dayScaleCellComponent={DayViewCell}
             timeScaleLabelComponent={DayViewLabel}
           />
