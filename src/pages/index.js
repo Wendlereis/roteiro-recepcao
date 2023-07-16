@@ -31,11 +31,15 @@ export default function Schedule() {
     setSelectedTab(tab);
   }
 
+  function formatDate(date) {
+    return new Intl.DateTimeFormat('pt-BR', { month: 'short', day: 'numeric' }).format(new Date(date));
+  }
+
   return (
     <div>
       <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth">
-        <Tab label="Sábado" value={edition.startDate} />
-        <Tab label="Domingo" value={edition.endDate} />
+        <Tab label={`Sábado ${formatDate(edition.startDate)}`} value={edition.startDate} />
+        <Tab label={`Domingo ${formatDate(edition.endDate)}`} value={edition.endDate} />
       </Tabs>
 
       {getEventsResponse?.data && (
