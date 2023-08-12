@@ -1,6 +1,6 @@
 export const edition = {
-  startDate: new Date(2023, 9, 2).toISOString(),
-  endDate: new Date(2023, 9, 3).toISOString(),
+  startDate: new Date(2023, 8, 2).toISOString(),
+  endDate: new Date(2023, 8, 3).toISOString(),
 };
 
 export function removeSeconds(date) {
