@@ -9,8 +9,6 @@ export function usePermission() {
   useEffect(() => {
     const hasPermissionStored = localStorage.getItem("@roteiro-recepcao:permission");
 
-    console.log({ hasPermissionStored, admin: query.admin });
-
     if (hasPermissionStored) {
       setIsAdmin(true);
     }

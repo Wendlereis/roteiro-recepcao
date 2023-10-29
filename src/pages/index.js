@@ -19,6 +19,7 @@ import { getEvents } from "../api/event";
 
 import { edition } from "../ultis/date";
 import { usePermission } from "../hook/usePermission";
+import { Menu } from "../components/Menu/Menu";
 
 export default function Schedule() {
   const { data: getEventsResponse } = useQuery(["events"], getEvents);
@@ -32,11 +33,13 @@ export default function Schedule() {
   }
 
   function formatDate(date) {
-    return new Intl.DateTimeFormat('pt-BR', { month: 'short', day: 'numeric' }).format(new Date(date));
+    return new Intl.DateTimeFormat("pt-BR", { month: "short", day: "numeric" }).format(new Date(date));
   }
 
   return (
     <div>
+      <Menu />
+
       <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth">
         <Tab label={`Sábado ${formatDate(edition.startDate)}`} value={edition.startDate} />
         <Tab label={`Domingo ${formatDate(edition.endDate)}`} value={edition.endDate} />
