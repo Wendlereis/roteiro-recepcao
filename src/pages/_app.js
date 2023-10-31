@@ -1,6 +1,7 @@
+import { SessionProvider } from "next-auth/react";
+
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-
 import { ptBR } from "date-fns/locale";
 
 import { CacheProvider } from "@emotion/react";
@@ -16,15 +17,19 @@ const clientSideEmotionCache = createEmotionCache();
 function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }) {
   const queryClient = new QueryClient();
 
+  const { session } = pageProps;
+
   return (
-    <CacheProvider value={emotionCache}>
-      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-        <QueryClientProvider client={queryClient}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </QueryClientProvider>
-      </LocalizationProvider>
-    </CacheProvider>
+    <SessionProvider session={session}>
+      <CacheProvider value={emotionCache}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+          <QueryClientProvider client={queryClient}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </QueryClientProvider>
+        </LocalizationProvider>
+      </CacheProvider>
+    </SessionProvider>
   );
 }
 
