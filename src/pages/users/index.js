@@ -132,7 +132,7 @@ export default function Users() {
           </Typography>
         </Stack>
 
-        <Link href="/create">
+        <Link href="/users/create">
           <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="secondary">
             <PersonAddAlt1Rounded />
           </Fab>
