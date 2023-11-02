@@ -65,7 +65,7 @@ export default function Schedule() {
 
       {isAdmin && (
         <Link href="/create">
-          <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="primary">
+          <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="secondary">
             <AddRounded />
           </Fab>
         </Link>
