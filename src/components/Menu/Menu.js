@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import Link from "next/link";
 import { useSession, signOut, signIn } from "next-auth/react";
 
 import {
   AppBar,
   Avatar,
   Box,
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -15,12 +18,14 @@ import {
   Typography,
 } from "@mui/material";
 
-import { MenuRounded } from "@mui/icons-material";
+import { MenuRounded, LoginRounded } from "@mui/icons-material";
 
 export function Menu() {
   const { data, status } = useSession();
 
   const [isOpen, setIsOpen] = useState();
+
+  const isAuthenticated = status === "authenticated";
 
   function handleOnClick() {
     setIsOpen(true);
@@ -30,60 +35,70 @@ export function Menu() {
     setIsOpen(false);
   }
 
-  useEffect(() => {
-    if (status !== "loading" && status === "unauthenticated") {
-      signIn();
-    }
-  }, [status]);
-
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="sticky">
         <Toolbar>
-          <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }} onClick={handleOnClick}>
-            <MenuRounded />
-          </IconButton>
+          <Box display="flex" justifyContent="space-between" width="100%">
+            {isAuthenticated && (
+              <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }} onClick={handleOnClick}>
+                <MenuRounded />
+              </IconButton>
+            )}
+
+            {!isAuthenticated && (
+              <Box alignSelf="flex-end">
+                <Button color="inherit" startIcon={<LoginRounded />} onClick={signIn}>
+                  Entrar
+                </Button>
+              </Box>
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
 
-      <Drawer open={isOpen} anchor="left" PaperProps={{ sx: { width: "80%" } }} onClose={handleOnClose}>
-        <Box sx={{ paddingX: 2, paddingY: 3, bgcolor: (theme) => theme.palette.primary.main }}>
-          <Avatar src={data?.user?.image} />
-          <Typography variant="h5" color="common.white" sx={{ mt: 2 }}>
-            {data?.user.name}
-          </Typography>
-        </Box>
+      {isAuthenticated && (
+        <Drawer open={isOpen} anchor="left" PaperProps={{ sx: { width: "80%" } }} onClose={handleOnClose}>
+          <Box sx={{ paddingX: 2, paddingY: 3, bgcolor: (theme) => theme.palette.primary.main }}>
+            <Avatar src={data?.user?.image} />
+            <Typography variant="h5" color="common.white" sx={{ mt: 2 }}>
+              {data?.user.name}
+            </Typography>
+          </Box>
 
-        <Divider />
+          <Divider />
 
-        <ListItem>
-          <ListItemButton>
-            <ListItemText primary="Roteiro" />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem>
-          <ListItemButton>
-            <ListItemText primary="Encontro" />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem>
-          <ListItemButton>
-            <ListItemText primary="Usuários" />
-          </ListItemButton>
-        </ListItem>
-
-        <Divider />
-
-        {data && (
           <ListItem>
-            <ListItemButton onClick={signOut}>
-              <ListItemText primary="Sair" primaryTypographyProps={{ color: "error.dark" }} />
+            <ListItemButton LinkComponent={Link} href="/">
+              <ListItemText primary="Roteiro" />
             </ListItemButton>
           </ListItem>
-        )}
-      </Drawer>
+
+          <ListItem>
+            <ListItemButton LinkComponent={Link} href="/events">
+              <ListItemText primary="Encontro" />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem>
+            <ListItemButton LinkComponent={Link} href="/users">
+              <ListItemText primary="Usuários" />
+            </ListItemButton>
+          </ListItem>
+
+          {data && (
+            <>
+              <Divider />
+
+              <ListItem>
+                <ListItemButton onClick={signOut}>
+                  <ListItemText primary="Sair" primaryTypographyProps={{ color: "error.dark" }} />
+                </ListItemButton>
+              </ListItem>
+            </>
+          )}
+        </Drawer>
+      )}
     </>
   );
 }
