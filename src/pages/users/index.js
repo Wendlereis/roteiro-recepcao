@@ -1,13 +1,16 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { Container, Fab, IconButton, Link, List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import { PersonRemoveAlt1Rounded, PersonAddAlt1Rounded } from "@mui/icons-material";
 
 import { deleteUser, getUsers } from "../../api/user";
+
+import { useUsers } from "../../hook/useUsers";
+
 import { Menu } from "../../components/Menu/Menu";
 
 export default function Users() {
-  const query = useQuery(["users"], getUsers);
+  const { users } = useUsers();
 
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
@@ -15,8 +18,6 @@ export default function Users() {
       query.refetch();
     },
   });
-
-  const data = query.data?.data;
 
   function handleOnDeleteUser(id) {
     return async () => {
@@ -38,7 +39,7 @@ export default function Users() {
         </Typography>
 
         <List>
-          {data?.managers.result?.map((manager) => (
+          {users?.managers.result?.map((manager) => (
             <ListItem key={manager._id} divider>
               <ListItemText primary={manager.name} secondary={manager.email} />
 
@@ -51,7 +52,7 @@ export default function Users() {
 
         <Stack>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1 }}>
-            {data?.managers.metadata.size} de 10 disponíveis
+            {users?.managers.metadata.size} de 10 disponíveis
           </Typography>
         </Stack>
 
@@ -60,7 +61,7 @@ export default function Users() {
         </Typography>
 
         <List>
-          {data?.teamMembers.result?.map((teamMember) => (
+          {users?.teamMembers.result?.map((teamMember) => (
             <ListItem key={teamMember._id} divider>
               <ListItemText primary={teamMember.name} secondary={teamMember.email} />
 
@@ -73,7 +74,7 @@ export default function Users() {
 
         <Stack>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 5 }}>
-            {data?.teamMembers?.metadata.size} de 2 disponíveis
+            {users?.teamMembers?.metadata.size} de 2 disponíveis
           </Typography>
         </Stack>
 
