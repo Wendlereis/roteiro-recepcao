@@ -1,19 +1,9 @@
-import { getDatabase } from "../../../server/infra/database/mongodb";
+import { CategoryController } from "../../../server/controller/CategoryController";
 
-export default async function handler(req, res) {
-  const event = await getCategories();
+export default async function handler(_, res) {
+  const controller = new CategoryController();
 
-  return res.json(event);
-}
+  const categories = await controller.index();
 
-export async function getCategories() {
-  try {
-    const db = await getDatabase();
-
-    const categories = await db.collection("categories").find().toArray();
-
-    return JSON.parse(JSON.stringify(categories));
-  } catch (e) {
-    console.error(e);
-  }
+  return res.json(categories);
 }
