@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 import { addMinutes } from "date-fns";
 
@@ -24,6 +25,8 @@ export default function Edit() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState();
 
   const { push, query } = useRouter();
+
+  const { data: session } = useSession();
 
   const { data: getEventResponse } = useQuery(["event", query.id], () => getEventById({ id: query.id }));
 
@@ -60,6 +63,8 @@ export default function Edit() {
       id: getEventResponse.data._id,
       startDate: buildEventDate(values.day, removeSeconds(new Date(values.startDate))),
       endDate: buildEventDate(values.day, removeSeconds(new Date(values.endDate))),
+      author: session?.user?.name,
+      updatedAt: new Date().toISOString(),
     };
 
     if (data.minutes !== 0) {

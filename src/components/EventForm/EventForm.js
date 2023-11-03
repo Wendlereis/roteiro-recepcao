@@ -1,3 +1,4 @@
+import { format, parseISO } from "date-fns";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +15,8 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
   const methods = useForm();
 
   const { data: getCategoriesResponse } = useQuery(["categories"], getCategories);
+
+  const updatedAtFormatted = mode === "edit" && format(parseISO(defaultValues?.updatedAt), "dd/MM/yyyy hh:mm");
 
   function getDefaultValueOrNull(value) {
     return value ? value : null;
@@ -58,8 +61,14 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
           </Box>
         )}
 
-        <Stack direction="row" justifyContent="flex-end">
-          <Button sx={{ mt: 4 }} type="submit" variant="contained">
+        <Stack direction="row" justifyContent="flex-end" alignItems="center" mt={4} mb={6}>
+          {mode === "edit" && (
+            <Typography sx={{ fontStyle: "italic", mr: 2 }} variant="caption" color="text.secondary">
+              Alterado por: {defaultValues.author} - {updatedAtFormatted}
+            </Typography>
+          )}
+
+          <Button type="submit" variant="contained">
             Salvar
           </Button>
         </Stack>
