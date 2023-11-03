@@ -7,3 +7,7 @@ export function createUser(user) {
 export function getUsers() {
   return axios.get("/api/user");
 }
+
+export function deleteUser({ id }) {
+  return axios.delete(`/api/user/${id}`);
+}

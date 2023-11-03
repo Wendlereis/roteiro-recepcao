@@ -1,15 +1,28 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { Container, Fab, IconButton, Link, List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import { PersonRemoveAlt1Rounded, PersonAddAlt1Rounded } from "@mui/icons-material";
 
-import { getUsers } from "../../api/user";
+import { deleteUser, getUsers } from "../../api/user";
 import { Menu } from "../../components/Menu/Menu";
 
 export default function Users() {
   const query = useQuery(["users"], getUsers);
 
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      query.refetch();
+    },
+  });
+
   const data = query.data?.data;
+
+  function handleOnDeleteUser(id) {
+    return async () => {
+      await deleteUserMutation.mutateAsync({ id });
+    };
+  }
 
   return (
     <>
@@ -29,7 +42,7 @@ export default function Users() {
             <ListItem key={manager._id} divider>
               <ListItemText primary={manager.name} secondary={manager.email} />
 
-              <IconButton size="small">
+              <IconButton size="small" onClick={handleOnDeleteUser(manager._id)}>
                 <PersonRemoveAlt1Rounded />
               </IconButton>
             </ListItem>
@@ -51,7 +64,7 @@ export default function Users() {
             <ListItem key={teamMember._id} divider>
               <ListItemText primary={teamMember.name} secondary={teamMember.email} />
 
-              <IconButton size="small">
+              <IconButton size="small" onClick={handleOnDeleteUser(teamMember._id)}>
                 <PersonRemoveAlt1Rounded color="action" />
               </IconButton>
             </ListItem>
