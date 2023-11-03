@@ -1,23 +1,13 @@
-import { ObjectId } from "mongodb";
-
-import { getDatabase } from "../../../lib/mongodb";
+import { UserController } from "../../../server/controller/UserController";
 
 export default async function handler(req, res) {
+  const controller = new UserController();
+
   const { id } = req.query;
 
   if (req.method === "DELETE") {
-    await deleteUser(id);
-  }
+    await controller.destroy(id);
 
-  return res.send();
-}
-
-export async function deleteUser(id) {
-  try {
-    const db = await getDatabase();
-
-    await db.collection("users").deleteOne({ _id: new ObjectId(id) });
-  } catch (e) {
-    console.error(e);
+    return res.send();
   }
 }
