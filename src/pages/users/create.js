@@ -12,6 +12,7 @@ import { Menu } from "../../components/Menu/Menu";
 import { Input } from "../../components/Input";
 
 import { createUser } from "../../api/user";
+import { useUsers } from "../../hook/useUsers";
 
 const schema = yup.object({
   name: yup.string().required("Campo obrigatório"),
@@ -20,6 +21,8 @@ const schema = yup.object({
 });
 
 export default function CreateUser() {
+  const { users } = useUsers();
+
   const methods = useForm({
     resolver: yupResolver(schema),
   });
@@ -27,6 +30,9 @@ export default function CreateUser() {
   const { push } = useRouter();
 
   const addUserMutation = useMutation(createUser);
+
+  const hasManagerSeatsAvailable = users?.managers.metadata.seatsAvailable;
+  const hasTeamMemberSeatsAvailable = users?.teamMembers.metadata.seatsAvailable;
 
   async function onSubmit(values) {
     await addUserMutation.mutateAsync(values);
@@ -50,8 +56,8 @@ export default function CreateUser() {
             <Input name="email" label="E-mail" />
 
             <Input name="role" label="Permissão" select>
-              <MenuItem value="dirigente">Dirigente</MenuItem>
-              <MenuItem value="equipista">Equipista</MenuItem>
+              {hasManagerSeatsAvailable && <MenuItem value="dirigente">Dirigente</MenuItem>}
+              {hasTeamMemberSeatsAvailable && <MenuItem value="equipista">Equipista</MenuItem>}
             </Input>
 
             <Stack direction="row" justifyContent="flex-end">

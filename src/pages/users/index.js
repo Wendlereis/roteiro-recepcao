@@ -12,6 +12,8 @@ import { Menu } from "../../components/Menu/Menu";
 export default function Users() {
   const { users, refetch } = useUsers();
 
+  const isCreateEnabled = users?.managers.metadata.seatsAvailable || users?.teamMembers.metadata.seatsAvailable;
+  
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
@@ -78,11 +80,13 @@ export default function Users() {
           </Typography>
         </Stack>
 
-        <Link href="/users/create">
-          <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="secondary">
-            <PersonAddAlt1Rounded />
-          </Fab>
-        </Link>
+        {isCreateEnabled && (
+          <Link href="/users/create">
+            <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="secondary">
+              <PersonAddAlt1Rounded />
+            </Fab>
+          </Link>
+        )}
       </Container>
     </>
   );
