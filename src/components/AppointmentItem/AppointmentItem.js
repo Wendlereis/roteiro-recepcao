@@ -7,7 +7,7 @@ import { usePermission } from "../../hook/usePermission";
 export function AppointmentItem({ children, ...rest }) {
   const { push } = useRouter();
 
-  const isAdmin = usePermission();
+  const { isAdmin } = usePermission();
 
   const { data } = rest;
 

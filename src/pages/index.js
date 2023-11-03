@@ -26,7 +26,7 @@ export default function Schedule() {
 
   const [selectedTab, setSelectedTab] = useState(edition.startDate);
 
-  const isAdmin = usePermission();
+  const { isAdmin } = usePermission();
 
   function handleTabChange(_, tab) {
     setSelectedTab(tab);
