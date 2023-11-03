@@ -10,12 +10,12 @@ import { useUsers } from "../../hook/useUsers";
 import { Menu } from "../../components/Menu/Menu";
 
 export default function Users() {
-  const { users } = useUsers();
+  const { users, refetch } = useUsers();
 
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      query.refetch();
+      refetch();
     },
   });
 
