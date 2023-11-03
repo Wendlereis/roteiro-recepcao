@@ -1,7 +1,10 @@
 import { useRouter } from "next/router";
 
+import * as yup from "yup";
+
 import { Button, Container, MenuItem, Stack, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -10,8 +13,16 @@ import { Input } from "../../components/Input";
 
 import { createUser } from "../../api/user";
 
+const schema = yup.object({
+  name: yup.string().required("Campo obrigatório"),
+  email: yup.string().email("Insira um e-mail válido").required("Campo obrigatório"),
+  role: yup.string().required("Campo obrigatório"),
+});
+
 export default function CreateUser() {
-  const methods = useForm();
+  const methods = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const { push } = useRouter();
 

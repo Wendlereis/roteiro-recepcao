@@ -11,8 +11,17 @@ export function Input({ name, label, defaultValue, type, select, children }) {
       name={name}
       defaultValue={defaultValue}
       control={control}
-      render={({ field }) => (
-        <TextField sx={{ mt: 3 }} label={label} type={type} select={select} {...field} fullWidth>
+      render={({ field, fieldState: { error } }) => (
+        <TextField
+          sx={{ mt: 3 }}
+          label={label}
+          type={type}
+          select={select}
+          {...field}
+          error={!!error}
+          helperText={error?.message}
+          fullWidth
+        >
           {children}
         </TextField>
       )}
