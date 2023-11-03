@@ -24,7 +24,7 @@ import { Menu } from "../components/Menu/Menu";
 export default function Schedule() {
   const { data: getEventsResponse } = useQuery(["events"], getEvents);
 
-  const [selectedTab, setSelectedTab] = useState(new Date());
+  const [selectedTab, setSelectedTab] = useState(edition.startDate);
 
   const isAdmin = usePermission();
 
