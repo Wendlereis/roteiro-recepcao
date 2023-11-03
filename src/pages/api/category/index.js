@@ -1,4 +1,4 @@
-import { getDatabase } from "../../../lib/mongodb";
+import { getDatabase } from "../../../server/infra/database/mongodb";
 
 export default async function handler(req, res) {
   const event = await getCategories();

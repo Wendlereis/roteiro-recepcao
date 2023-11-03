@@ -1,6 +1,6 @@
 import { addMinutes } from "date-fns";
 
-import { getDatabase } from "../../../lib/mongodb";
+import { getDatabase } from "../../../server/infra/database/mongodb";
 
 function removeSeconds(date) {
   return new Date(date.setSeconds(0, 0));

@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-import { getDatabase } from "../../../lib/mongodb";
+import { getDatabase } from "../../../server/infra/database/mongodb";
 
 export default async function handler(req, res) {
   const event = req.body;
