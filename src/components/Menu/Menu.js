@@ -20,8 +20,12 @@ import {
 
 import { MenuRounded, LoginRounded } from "@mui/icons-material";
 
+import { usePermission } from "../../hook/usePermission";
+
 export function Menu() {
   const { data, status } = useSession();
+
+  const { isAdmin, isManager } = usePermission();
 
   const [isOpen, setIsOpen] = useState();
 
@@ -40,7 +44,7 @@ export function Menu() {
       <AppBar position="sticky">
         <Toolbar>
           <Box display="flex" justifyContent="space-between" width="100%">
-            {isAuthenticated && (
+            {isAdmin && (
               <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }} onClick={handleOnClick}>
                 <MenuRounded />
               </IconButton>
@@ -57,48 +61,50 @@ export function Menu() {
         </Toolbar>
       </AppBar>
 
-      {isAuthenticated && (
-        <Drawer open={isOpen} anchor="left" PaperProps={{ sx: { width: "80%" } }} onClose={handleOnClose}>
-          <Box sx={{ paddingX: 2, paddingY: 3, bgcolor: (theme) => theme.palette.primary.main }}>
-            <Avatar src={data?.user?.image} />
-            <Typography variant="h5" color="common.white" sx={{ mt: 2 }}>
-              {data?.user.name}
-            </Typography>
-          </Box>
+      <Drawer open={isOpen} anchor="left" PaperProps={{ sx: { width: "80%" } }} onClose={handleOnClose}>
+        <Box sx={{ paddingX: 2, paddingY: 3, bgcolor: (theme) => theme.palette.primary.main }}>
+          <Avatar src={data?.user?.image} />
+          <Typography variant="h5" color="common.white" sx={{ mt: 2 }}>
+            {data?.user.name}
+          </Typography>
+        </Box>
 
-          <Divider />
+        <Divider />
 
-          <ListItem>
-            <ListItemButton LinkComponent={Link} href="/">
-              <ListItemText primary="Roteiro" />
-            </ListItemButton>
-          </ListItem>
+        <ListItem>
+          <ListItemButton LinkComponent={Link} href="/">
+            <ListItemText primary="Roteiro" />
+          </ListItemButton>
+        </ListItem>
 
-          <ListItem>
-            <ListItemButton LinkComponent={Link} href="/events">
-              <ListItemText primary="Encontro" />
-            </ListItemButton>
-          </ListItem>
+        {isManager && (
+          <>
+            <ListItem>
+              <ListItemButton LinkComponent={Link} href="/events">
+                <ListItemText primary="Encontro" />
+              </ListItemButton>
+            </ListItem>
 
-          <ListItem>
-            <ListItemButton LinkComponent={Link} href="/users">
-              <ListItemText primary="Usuários" />
-            </ListItemButton>
-          </ListItem>
+            <ListItem>
+              <ListItemButton LinkComponent={Link} href="/users">
+                <ListItemText primary="Usuários" />
+              </ListItemButton>
+            </ListItem>
+          </>
+        )}
 
-          {data && (
-            <>
-              <Divider />
+        {data && (
+          <>
+            <Divider />
 
-              <ListItem>
-                <ListItemButton onClick={signOut}>
-                  <ListItemText primary="Sair" primaryTypographyProps={{ color: "error.dark" }} />
-                </ListItemButton>
-              </ListItem>
-            </>
-          )}
-        </Drawer>
-      )}
+            <ListItem>
+              <ListItemButton onClick={signOut}>
+                <ListItemText primary="Sair" primaryTypographyProps={{ color: "error.dark" }} />
+              </ListItemButton>
+            </ListItem>
+          </>
+        )}
+      </Drawer>
     </>
   );
 }
