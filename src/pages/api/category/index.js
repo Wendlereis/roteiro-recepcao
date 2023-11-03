@@ -3,7 +3,9 @@ import { CategoryController } from "../../../server/controller/CategoryControlle
 export default async function handler(_, res) {
   const controller = new CategoryController();
 
-  const categories = await controller.index();
+  if (req.method === "GET") {
+    const categories = await controller.index();
 
-  return res.json(categories);
+    return res.json(categories);
+  }
 }
