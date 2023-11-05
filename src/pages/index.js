@@ -6,7 +6,12 @@ import { Fab, Tab, Tabs } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
-import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpress/dx-react-scheduler-material-ui";
+import {
+  Scheduler,
+  DayView,
+  Appointments,
+  CurrentTimeIndicator,
+} from "@devexpress/dx-react-scheduler-material-ui";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -33,7 +38,10 @@ export default function Schedule() {
   }
 
   function formatDate(date) {
-    return new Intl.DateTimeFormat("pt-BR", { month: "short", day: "numeric" }).format(new Date(date));
+    return new Intl.DateTimeFormat("pt-BR", {
+      month: "short",
+      day: "numeric",
+    }).format(new Date(date));
   }
 
   return (
@@ -41,8 +49,14 @@ export default function Schedule() {
       <Menu />
 
       <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth">
-        <Tab label={`Sábado ${formatDate(edition.startDate)}`} value={edition.startDate} />
-        <Tab label={`Domingo ${formatDate(edition.endDate)}`} value={edition.endDate} />
+        <Tab
+          label={`Sábado ${formatDate(edition.startDate)}`}
+          value={edition.startDate}
+        />
+        <Tab
+          label={`Domingo ${formatDate(edition.endDate)}`}
+          value={edition.endDate}
+        />
       </Tabs>
 
       {getEventsResponse?.data && (
@@ -57,7 +71,10 @@ export default function Schedule() {
             timeScaleLabelComponent={DayViewLabel}
           />
 
-          <Appointments appointmentComponent={AppointmentItem} appointmentContentComponent={AppointmentContent} />
+          <Appointments
+            appointmentComponent={AppointmentItem}
+            appointmentContentComponent={AppointmentContent}
+          />
 
           <CurrentTimeIndicator updateInterval={60000} />
         </Scheduler>
@@ -65,7 +82,10 @@ export default function Schedule() {
 
       {isAdmin && (
         <Link href="/create">
-          <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="secondary">
+          <Fab
+            sx={{ position: "fixed", bottom: 16, right: 16 }}
+            color="secondary"
+          >
             <AddRounded />
           </Fab>
         </Link>

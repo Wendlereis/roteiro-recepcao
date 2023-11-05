@@ -39,7 +39,12 @@ export default function Create() {
       <AppBar position="static">
         <Toolbar>
           <Link href="/">
-            <IconButton component="a" size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              sx={{ mr: 2 }}
+            >
               <ArrowBackRounded />
             </IconButton>
           </Link>
@@ -48,7 +53,9 @@ export default function Create() {
 
       <Box bgcolor="background.default" p={2}>
         <Typography variant="h3">Novo evento</Typography>
-        <Typography color="text.secondary">Adicione acessos, palestras ou peças</Typography>
+        <Typography color="text.secondary">
+          Adicione acessos, palestras ou peças
+        </Typography>
 
         <Box mt={1}>
           <EventForm onSubmit={handleSave} />
