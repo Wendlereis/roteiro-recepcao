@@ -5,15 +5,15 @@ export default async function handler(req, res) {
 
   const user = req.body;
 
+  if (req.method === "GET") {
+    const users = await controller.index();
+
+    res.json(users);
+  }
+
   if (req.method === "POST") {
     await controller.add(user);
 
     res.send();
-  }
-
-  if (req.method === "GET") {
-    const users = await controller.index();
-
-    return res.json(users);
   }
 }

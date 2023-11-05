@@ -8,6 +8,6 @@ export default async function handler(req, res) {
   if (req.method === "DELETE") {
     await controller.destroy(id);
 
-    return res.send();
+    res.send();
   }
 }

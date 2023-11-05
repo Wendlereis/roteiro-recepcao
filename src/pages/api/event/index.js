@@ -5,18 +5,18 @@ export default async function handler(req, res) {
   const eventController = new EventController();
   const eventDurationController = new EventDurationController();
 
+  if (req.method === "GET") {
+    const events = await eventController.index();
+
+    res.json(events);
+  }
+
   if (req.method === "POST") {
     const event = req.body;
     
     await eventController.add(event);
 
     res.send();
-  }
-
-  if (req.method === "GET") {
-    const events = await eventController.index();
-
-    res.json(events);
   }
 
   if (req.method === "PUT") {
