@@ -1,19 +1,11 @@
-import { UserController } from "../../../server/controller/UserController";
+import * as controller from "../../../server/controller/UserController";
 
-export default async function handler(req, res) {
-  const controller = new UserController();
-
-  const user = req.body;
-
+export default function handler(req, res) {
   if (req.method === "GET") {
-    const users = await controller.index();
-
-    res.json(users);
+    return controller.index(req, res);
   }
 
   if (req.method === "POST") {
-    await controller.add(user);
-
-    res.send();
+    return controller.add(req, res);
   }
 }

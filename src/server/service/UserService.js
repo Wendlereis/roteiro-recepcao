@@ -1,9 +1,7 @@
-export class UserService {
-  getManagers(users) {
-    return users.filter((user) => user.role === "dirigente");
-  }
+export function getManagers(users) {
+  return users.filter((user) => user.role === "dirigente");
+}
 
-  getTeamMembers(users) {
-    return users.filter((user) => user.role === "equipista");
-  }
+export function getTeamMembers(users) {
+  return users.filter((user) => user.role === "equipista");
 }

@@ -1,56 +1,58 @@
-import { UserRepository } from "../repository/UserRepository";
-import { UserService } from "../service/UserService";
+import * as repository from "../repository/UserRepository";
+import * as service from "../service/UserService";
 
-export class UserController {
-  constructor() {
-    this.service = new UserService();
-    this.repository = new UserRepository();
+export async function index(_, res) {
+  try {
+    const users = await repository.list();
+
+    const managers = service.getManagers(users);
+
+    const teamMembers = service.getTeamMembers(users);
+
+    res.json({
+      managers: getUserResponse(managers, 10),
+      teamMembers: getUserResponse(teamMembers, 2),
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
+}
 
-  async index() {
-    try {
-      const users = await this.repository.list();
+export async function add(req, res) {
+  const user = req.body;
 
-      const managers = this.service.getManagers(users);
+  try {
+    await repository.add(user);
 
-      const teamMembers = this.service.getTeamMembers(users);
-
-      return JSON.parse(
-        JSON.stringify({
-          managers: this.getUserResponse(managers, 10),
-          teamMembers: this.getUserResponse(teamMembers, 2),
-        })
-      );
-    } catch (e) {
-      console.error(e);
-    }
+    res.send();
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
+}
 
-  async add(user) {
-    try {
-      await this.repository.add(user);
-    } catch (e) {
-      console.error(e);
-    }
+export async function destroy(req, res) {
+  const { id } = req.query;
+
+  try {
+    await repository.destroy(id);
+
+    res.send();
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
+}
 
-  async destroy(id) {
-    try {
-      await this.repository.destroy(id);
-    } catch (e) {
-      console.error(e);
-    }
-  }
+function getUserResponse(users, limit) {
+  const size = users.length;
 
-  getUserResponse(users, limit) {
-    const size = users.length;
-
-    return {
-      result: users,
-      metadata: {
-        seatsAvailable: size < limit,
-        size,
-      },
-    };
-  }
+  return {
+    result: users,
+    metadata: {
+      seatsAvailable: size < limit,
+      size,
+    },
+  };
 }
