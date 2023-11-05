@@ -1,17 +1,12 @@
-import { CategoryRepository } from "../repository/CategoryRepository";
+import * as repository from "../repository/CategoryRepository";
 
-export class CategoryController {
-  constructor() {
-    this.repository = new CategoryRepository();
-  }
+export async function index(_, res) {
+  try {
+    const categories = await repository.list();
 
-  async index() {
-    try {
-      const categories = await this.repository.list();
-
-      return JSON.parse(JSON.stringify(categories));
-    } catch (e) {
-      console.error(e);
-    }
+    res.json(categories);
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
 }

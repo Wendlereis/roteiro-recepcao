@@ -1,11 +1,9 @@
 import { getDatabase } from "../infra/database/mongodb";
 
-export class CategoryRepository {
-  async list() {
-    const db = await getDatabase();
+export async function list() {
+  const db = await getDatabase();
 
-    const categories = await db.collection("categories").find().toArray();
+  const categories = await db.collection("categories").find().toArray();
 
-    return categories;
-  }
+  return categories;
 }
