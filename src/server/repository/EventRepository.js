@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+
 import { getDatabase } from '../infra/database/mongodb'
 
 export class EventRepository {
@@ -18,7 +20,7 @@ export class EventRepository {
   async findById(id) {
     const db = await getDatabase();
 
-    const event = await db.collection("eventos").findOne({ _id: ObjectId(id) });
+    const event = await db.collection("eventos").findOne({ _id: new ObjectId(id) });
 
     return event;
   }

@@ -1,6 +1,6 @@
 import { CategoryController } from "../../../server/controller/CategoryController";
 
-export default async function handler(_, res) {
+export default async function handler(req, res) {
   const controller = new CategoryController();
 
   if (req.method === "GET") {
