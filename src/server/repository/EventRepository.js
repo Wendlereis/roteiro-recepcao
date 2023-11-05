@@ -40,10 +40,12 @@ export class EventRepository {
   async edit(event) {
     const db = await getDatabase();
 
+    console.log({ event });
+
     const { _id, ...restEvent } = event;
 
     await db.collection("eventos").updateOne(
-      { _id },
+      { _id: new ObjectId(_id) },
       {
         $set: restEvent,
       }
