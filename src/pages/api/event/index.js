@@ -5,9 +5,9 @@ export default async function handler(req, res) {
   const eventController = new EventController();
   const eventDurationController = new EventDurationController();
 
-  const event = req.body;
-
   if (req.method === "POST") {
+    const event = req.body;
+    
     await eventController.add(event);
 
     res.send();
@@ -20,7 +20,9 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "PUT") {
-    const eventos = await eventDurationController.edit(event);
+    const { endDate, minutes } = req.body;
+
+    const eventos = await eventDurationController.edit(endDate, minutes);
 
     res.json(eventos);
   }

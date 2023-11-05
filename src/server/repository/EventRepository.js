@@ -25,12 +25,12 @@ export class EventRepository {
     return event;
   }
 
-  async findByStartDate(event) {
+  async findByStartDate(date) {
     const db = await getDatabase();
 
     const events = await db
       .collection("eventos")
-      .find({ startDate: { $gte: event.endDate } })
+      .find({ startDate: { $gte: date } })
       .sort({ startDate: 1 })
       .toArray();
 
@@ -39,8 +39,6 @@ export class EventRepository {
 
   async edit(event) {
     const db = await getDatabase();
-
-    console.log({ event });
 
     const { _id, ...restEvent } = event;
 

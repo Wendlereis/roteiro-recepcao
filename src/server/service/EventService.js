@@ -1,7 +1,7 @@
 import { addMinutes } from "date-fns";
 
 export class EventService {
-  updateEventsDuration(events) {
+  updateEventsDuration(events, minutes) {
     const updatedEvents = events.map((event) => ({
       ...event,
       startDate: addMinutes(this.removeSeconds(new Date(event.startDate)), minutes).toISOString(),
