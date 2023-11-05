@@ -1,29 +1,16 @@
-import { EventController } from "../../../server/controller/EventController";
-import { EventDurationController } from "../../../server/controller/EventDurationController";
+import * as eventController from "../../../server/controller/EventController";
+import * as eventDurationController from "../../../server/controller/EventDurationController";
 
-export default async function handler(req, res) {
-  const eventController = new EventController();
-  const eventDurationController = new EventDurationController();
-
+export default function handler(req, res) {
   if (req.method === "GET") {
-    const events = await eventController.index();
-
-    res.json(events);
+    return eventController.index(req, res);
   }
 
   if (req.method === "POST") {
-    const event = req.body;
-    
-    await eventController.add(event);
-
-    res.send();
+    return eventController.add(req, res);
   }
 
   if (req.method === "PUT") {
-    const { endDate, minutes } = req.body;
-
-    const eventos = await eventDurationController.edit(endDate, minutes);
-
-    res.json(eventos);
+    return eventDurationController.edit(req, res);
   }
 }

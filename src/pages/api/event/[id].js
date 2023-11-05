@@ -1,27 +1,15 @@
-import { EventController } from "../../../server/controller/EventController";
+import * as controller from "../../../server/controller/EventController";
 
-export default async function handler(req, res) {
-  const controller = new EventController();
-
-  const { id } = req.query;
-
-  const event = req.body;
-
+export default function handler(req, res) {
   if (req.method === "GET") {
-    const event = await controller.getById(id);
-
-    res.json(event);
+    return controller.getById(req, res);
   }
 
   if (req.method === "PUT") {
-    await controller.edit(id, event);
-    
-    res.send();
+    return controller.edit(req, res);
   }
 
   if (req.method === "DELETE") {
-    await controller.destroy(id);
-
-    res.send();
+    return controller.destroy(req, res);
   }
 }

@@ -1,58 +1,62 @@
-import { ObjectId } from 'mongodb';
+import { ObjectId } from "mongodb";
 
-import { getDatabase } from '../infra/database/mongodb'
+import { getDatabase } from "../infra/database/mongodb";
 
-export class EventRepository {
-  async list() {
-    const db = await getDatabase();
+export async function list() {
+  const db = await getDatabase();
 
-    const events = await db.collection("eventos").find().sort({ startDate: 1 }).toArray();
+  const events = await db
+    .collection("eventos")
+    .find()
+    .sort({ startDate: 1 })
+    .toArray();
 
-    return events;
-  }
+  return events;
+}
 
-  async add(event) {
-    const db = await getDatabase();
+export async function add(event) {
+  const db = await getDatabase();
 
-    await db.collection("eventos").insertOne(event);
-  }
+  await db.collection("eventos").insertOne(event);
+}
 
-  async findById(id) {
-    const db = await getDatabase();
+export async function findById(id) {
+  const db = await getDatabase();
 
-    const event = await db.collection("eventos").findOne({ _id: new ObjectId(id) });
+  const event = await db
+    .collection("eventos")
+    .findOne({ _id: new ObjectId(id) });
 
-    return event;
-  }
+  return event;
+}
 
-  async findByStartDate(date) {
-    const db = await getDatabase();
+export async function findByStartDate(date) {
+  const db = await getDatabase();
 
-    const events = await db
-      .collection("eventos")
-      .find({ startDate: { $gte: date } })
-      .sort({ startDate: 1 })
-      .toArray();
+  const events = await db
+    .collection("eventos")
+    .find({ startDate: { $gte: date } })
+    .sort({ startDate: 1 })
+    .toArray();
 
-    return events;
-  }
+  return events;
+}
 
-  async edit(event) {
-    const db = await getDatabase();
+export async function edit(event) {
+  const db = await getDatabase();
 
-    const { _id, ...restEvent } = event;
+  const { _id, ...restEvent } = event;
 
-    await db.collection("eventos").updateOne(
-      { _id: new ObjectId(_id) },
-      {
-        $set: restEvent,
-      }
-    );
-  }
+  await db.collection("eventos").updateOne(
+    { _id: new ObjectId(_id) },
+    {
+      $set: restEvent,
+    }
+  );
+}
 
-  async destroy(id) {
-    const db = await getDatabase();
+export async function destroy(id) {
+  const db = await getDatabase();
 
-    await db.collection("eventos").deleteOne({ _id: new ObjectId(id) });
-  }
+  await db.collection("eventos").deleteOne({ _id: new ObjectId(id) });
 }

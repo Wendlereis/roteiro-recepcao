@@ -1,53 +1,66 @@
-import { EventRepository } from "../repository/EventRepository";
-import { EventService } from "../service/EventService";
+import * as repository from "../repository/EventRepository";
 
-export class EventController {
-  constructor() {
-    this.service = new EventService();
-    this.repository = new EventRepository();
+export async function index(_, res) {
+  try {
+    const eventos = await repository.list();
+
+    res.json(eventos);
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
+}
 
-  async index() {
-    try {
-      const eventos = await this.repository.list();
+export async function add(req, res) {
+  const event = req.body;
 
-      return JSON.parse(JSON.stringify(eventos));
-    } catch (e) {
-      console.error(e);
-    }
+  try {
+    await repository.add(event);
+
+    res.send();
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
+}
 
-  async add(event) {
-    try {
-      await this.repository.add(event);
-    } catch (e) {
-      console.error(e);
-    }
+export async function edit(req, res) {
+  const { id } = req.query;
+
+  const event = req.body;
+
+  try {
+    await repository.edit({ ...event, _id: id });
+
+    res.send();
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
+}
 
-  async edit(id, event) {
-    try {
-      await this.repository.edit({ ...event, _id: id });
-    } catch (e) {
-      console.error(e);
-    }
+export async function destroy(req, res) {
+  const { id } = req.query;
+
+  try {
+    await repository.destroy(id);
+
+    res.send();
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
+}
 
-  async destroy(id) {
-    try {
-      await this.repository.destroy(id);
-    } catch (e) {
-      console.error(e);
-    }
-  }
+export async function getById(req, res) {
+  const { id } = req.query;
 
-  async getById(id) {
-    try {
-      const event = await this.repository.findById(id);
+  try {
+    const event = await repository.findById(id);
 
-      return JSON.parse(JSON.stringify(event));
-    } catch (e) {
-      console.error(e);
-    }
+    res.json(event);
+  } catch (e) {
+    console.error(e);
+    res.status(500);
   }
 }
