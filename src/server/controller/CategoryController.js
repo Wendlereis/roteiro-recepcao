@@ -7,7 +7,7 @@ export class CategoryController {
 
   async index() {
     try {
-      const categories = this.repository.list();
+      const categories = await this.repository.list();
 
       return JSON.parse(JSON.stringify(categories));
     } catch (e) {

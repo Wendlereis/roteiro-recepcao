@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   if (req.method === "GET") {
     const users = await controller.index();
-
-    res.json(users);
+console.log({ users });
+    return res.json(users);
   }
 }

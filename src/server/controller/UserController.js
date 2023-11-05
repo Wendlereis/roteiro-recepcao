@@ -9,7 +9,7 @@ export class UserController {
 
   async index() {
     try {
-      const users = this.repository.list();
+      const users = await this.repository.list();
 
       const managers = this.service.getManagers(users);
 
@@ -17,8 +17,8 @@ export class UserController {
 
       return JSON.parse(
         JSON.stringify({
-          managers: getUserResponse(managers, 10),
-          teamMembers: getUserResponse(teamMembers, 2),
+          managers: this.getUserResponse(managers, 10),
+          teamMembers: this.getUserResponse(teamMembers, 2),
         })
       );
     } catch (e) {
@@ -28,7 +28,7 @@ export class UserController {
 
   async add(user) {
     try {
-      this.repository.add(user);
+      await this.repository.add(user);
     } catch (e) {
       console.error(e);
     }
@@ -36,7 +36,7 @@ export class UserController {
 
   async destroy(id) {
     try {
-      this.repository.destroy(id);
+      await this.repository.destroy(id);
     } catch (e) {
       console.error(e);
     }

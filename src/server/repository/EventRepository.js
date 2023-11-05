@@ -1,4 +1,4 @@
-import { getDatabase } from "../../../server/infra/database/mongodb";
+import { getDatabase } from '../infra/database/mongodb'
 
 export class EventRepository {
   async list() {

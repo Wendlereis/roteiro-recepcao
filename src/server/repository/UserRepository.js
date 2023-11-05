@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getDatabase } from "../../../server/infra/database/mongodb";
+import { getDatabase } from "../infra/database/mongodb";
 
 export class UserRepository {
   async list() {

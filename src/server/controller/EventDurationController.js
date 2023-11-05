@@ -9,7 +9,7 @@ export class EventDurationController {
 
   async edit(event) {
     try {
-      const events = this.repository.findByStartDate(event);
+      const events = await this.repository.findByStartDate(event);
 
       const updatedEvents = this.service.updateEventsDuration(events);
 
