@@ -11,10 +11,15 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import createEmotionCache from "../lib/emotion";
+import { trpc } from "../ultis/trpc";
 
 const clientSideEmotionCache = createEmotionCache();
 
-function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }) {
+function MyApp({
+  Component,
+  pageProps,
+  emotionCache = clientSideEmotionCache,
+}) {
   const queryClient = new QueryClient();
 
   const { session } = pageProps;
@@ -33,4 +38,4 @@ function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }) 
   );
 }
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);
