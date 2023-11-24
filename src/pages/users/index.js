@@ -1,19 +1,38 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { Container, Fab, IconButton, Link, List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
-import { PersonRemoveAlt1Rounded, PersonAddAlt1Rounded } from "@mui/icons-material";
+import {
+  Container,
+  Fab,
+  IconButton,
+  Link,
+  List,
+  ListItem,
+  ListItemText,
+  Stack,
+  Typography,
+} from "@mui/material";
+import {
+  PersonRemoveAlt1Rounded,
+  PersonAddAlt1Rounded,
+} from "@mui/icons-material";
 
 import { deleteUser, getUsers } from "../../api/user";
 
 import { useUsers } from "../../hook/useUsers";
 
 import { Menu } from "../../components/Menu/Menu";
+import { usePermission } from "../../hook/usePermission";
 
 export default function Users() {
   const { users, refetch } = useUsers();
 
-  const isCreateEnabled = users?.managers.metadata.seatsAvailable || users?.teamMembers.metadata.seatsAvailable;
-  
+  const { isAdmin } = usePermission();
+
+  const isCreateEnabled =
+    isAdmin &&
+    (users?.managers.metadata.seatsAvailable ||
+      users?.teamMembers.metadata.seatsAvailable);
+
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
@@ -45,7 +64,10 @@ export default function Users() {
             <ListItem key={manager._id} divider>
               <ListItemText primary={manager.name} secondary={manager.email} />
 
-              <IconButton size="small" onClick={handleOnDeleteUser(manager._id)}>
+              <IconButton
+                size="small"
+                onClick={handleOnDeleteUser(manager._id)}
+              >
                 <PersonRemoveAlt1Rounded />
               </IconButton>
             </ListItem>
@@ -65,9 +87,15 @@ export default function Users() {
         <List>
           {users?.teamMembers.result?.map((teamMember) => (
             <ListItem key={teamMember._id} divider>
-              <ListItemText primary={teamMember.name} secondary={teamMember.email} />
+              <ListItemText
+                primary={teamMember.name}
+                secondary={teamMember.email}
+              />
 
-              <IconButton size="small" onClick={handleOnDeleteUser(teamMember._id)}>
+              <IconButton
+                size="small"
+                onClick={handleOnDeleteUser(teamMember._id)}
+              >
                 <PersonRemoveAlt1Rounded color="action" />
               </IconButton>
             </ListItem>
@@ -82,7 +110,11 @@ export default function Users() {
 
         {isCreateEnabled && (
           <Link href="/users/create">
-            <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="secondary">
+            <Fab
+              component="a"
+              sx={{ position: "fixed", bottom: 16, right: 16 }}
+              color="secondary"
+            >
               <PersonAddAlt1Rounded />
             </Fab>
           </Link>
