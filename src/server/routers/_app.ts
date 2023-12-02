@@ -15,10 +15,25 @@ const editionRouter = router({
         name: yup.string().required(),
         startDate: yup.date().required(),
         endDate: yup.date().required(),
+        active: yup.boolean().required(),
       })
     )
     .mutation(async (opts) => {
       await repository.add(opts.input);
+    }),
+  setActive: procedure
+    .input(
+      yup.object({
+        id: yup.string().required(),
+      })
+    )
+    .mutation(async (opts) => {
+      const currentActive = await repository.findByActive(true);
+
+      await Promise.all([
+        repository.deactivateById(currentActive._id),
+        repository.activateById(opts.input.id),
+      ]);
     }),
 });
 
