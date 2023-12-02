@@ -19,8 +19,6 @@ export function usePermission() {
 
   const isAdmin = isManager || isTeamMember;
 
-  console.log({ isAdmin, isManager, isTeamMember });
-
   useEffect(() => {
     const hasPermissionStored = localStorage.getItem(
       "@roteiro-recepcao:permission"

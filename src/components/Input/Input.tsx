@@ -1,9 +1,24 @@
+import { ReactNode } from "react";
 import { Slider, TextField } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 
 import { Controller, useFormContext } from "react-hook-form";
 
-export function Input({ name, label, defaultValue, type, select, children }) {
+interface InputProps {
+  name: string;
+  label: string;
+  defaultValue?: string;
+  select?: boolean;
+  children?: ReactNode;
+}
+
+export function Input({
+  name,
+  label,
+  defaultValue,
+  select,
+  children,
+}: InputProps) {
   const { control } = useFormContext();
 
   return (
@@ -15,7 +30,6 @@ export function Input({ name, label, defaultValue, type, select, children }) {
         <TextField
           sx={{ mt: 3 }}
           label={label}
-          type={type}
           select={select}
           {...field}
           error={!!error}
@@ -29,7 +43,9 @@ export function Input({ name, label, defaultValue, type, select, children }) {
   );
 }
 
-Input.Time = function InputTime({ name, label, defaultValue }) {
+type InputTimeProps = Omit<InputProps, "select" | "children">;
+
+Input.Time = function InputTime({ name, label, defaultValue }: InputTimeProps) {
   const { control } = useFormContext();
 
   return (
@@ -43,14 +59,18 @@ Input.Time = function InputTime({ name, label, defaultValue }) {
           onChange={onChange}
           value={value}
           ampm={false}
-          renderInput={(params) => <TextField sx={{ mt: 3 }} {...params} fullWidth />}
+          renderInput={(params) => (
+            <TextField sx={{ mt: 3 }} {...params} fullWidth />
+          )}
         />
       )}
     />
   );
 };
 
-Input.Slider = function InputTime({ name, label, defaultValue }) {
+type InputSliderProps = Omit<InputProps, "select" | "children" | "label">;
+
+Input.Slider = function InputSlider({ name, defaultValue }: InputSliderProps) {
   const { control } = useFormContext();
 
   return (
@@ -67,7 +87,30 @@ Input.Slider = function InputTime({ name, label, defaultValue }) {
           value={value}
           valueLabelDisplay="auto"
           marks
-          fullWidth
+        />
+      )}
+    />
+  );
+};
+
+type InputDateProps = Omit<InputProps, "select" | "children">;
+
+Input.Date = function InputDate({ name, label, defaultValue }: InputDateProps) {
+  const { control } = useFormContext();
+
+  return (
+    <Controller
+      name={name}
+      defaultValue={defaultValue}
+      control={control}
+      render={({ field: { onChange, value } }) => (
+        <DatePicker
+          label={label}
+          onChange={onChange}
+          value={value}
+          renderInput={(params) => (
+            <TextField sx={{ mt: 3 }} {...params} fullWidth />
+          )}
         />
       )}
     />
