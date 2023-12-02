@@ -113,7 +113,7 @@ export function Menu() {
         {isManager && (
           <>
             <ListItem>
-              <ListItemButton LinkComponent={Link} href="/events">
+              <ListItemButton LinkComponent={Link} href="/editions">
                 <ListItemText primary="Encontro" />
               </ListItemButton>
             </ListItem>

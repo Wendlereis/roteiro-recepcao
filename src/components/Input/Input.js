@@ -1,5 +1,5 @@
 import { Slider, TextField } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -43,7 +43,9 @@ Input.Time = function InputTime({ name, label, defaultValue }) {
           onChange={onChange}
           value={value}
           ampm={false}
-          renderInput={(params) => <TextField sx={{ mt: 3 }} {...params} fullWidth />}
+          renderInput={(params) => (
+            <TextField sx={{ mt: 3 }} {...params} fullWidth />
+          )}
         />
       )}
     />
@@ -68,6 +70,28 @@ Input.Slider = function InputTime({ name, label, defaultValue }) {
           valueLabelDisplay="auto"
           marks
           fullWidth
+        />
+      )}
+    />
+  );
+};
+
+Input.Date = function InputTime({ name, label, defaultValue }) {
+  const { control } = useFormContext();
+
+  return (
+    <Controller
+      name={name}
+      defaultValue={defaultValue}
+      control={control}
+      render={({ field: { onChange, value } }) => (
+        <DatePicker
+          label={label}
+          onChange={onChange}
+          value={value}
+          renderInput={(params) => (
+            <TextField sx={{ mt: 3 }} {...params} fullWidth />
+          )}
         />
       )}
     />
