@@ -4,7 +4,11 @@ import { getDatabase } from "../infra/database/mongodb";
 export async function list() {
   const db = await getDatabase();
 
-  const users = await db.collection("editions").find().toArray();
+  const users = await db
+    .collection("editions")
+    .find()
+    .sort({ startDate: -1 })
+    .toArray();
 
   return users;
 }
