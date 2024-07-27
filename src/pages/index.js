@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Link from "next/link";
+
+import { trpc } from "../ultis/trpc";
 
 import { Fab, Tab, Tabs } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
-import { Scheduler, DayView, Appointments, CurrentTimeIndicator } from "@devexpress/dx-react-scheduler-material-ui";
+import {
+  Scheduler,
+  DayView,
+  Appointments,
+  CurrentTimeIndicator,
+} from "@devexpress/dx-react-scheduler-material-ui";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -17,14 +24,15 @@ import { AppointmentContent } from "../components/AppointmentContent";
 
 import { getEvents } from "../api/event";
 
-import { edition } from "../ultis/date";
 import { usePermission } from "../hook/usePermission";
 import { Menu } from "../components/Menu/Menu";
 
 export default function Schedule() {
   const { data: getEventsResponse } = useQuery(["events"], getEvents);
 
-  const [selectedTab, setSelectedTab] = useState(edition.startDate);
+  const edition = trpc.edition.getByActive.useQuery();
+
+  const [selectedTab, setSelectedTab] = useState();
 
   const { isAdmin } = usePermission();
 
@@ -33,16 +41,37 @@ export default function Schedule() {
   }
 
   function formatDate(date) {
-    return new Intl.DateTimeFormat("pt-BR", { month: "short", day: "numeric" }).format(new Date(date));
+    return new Intl.DateTimeFormat("pt-BR", {
+      month: "short",
+      day: "numeric",
+    }).format(new Date(date));
+  }
+
+  useEffect(() => {
+    if (edition.data) {
+      const start = edition.data.startDate.toISOString();
+
+      setSelectedTab(start);
+    }
+  }, [edition.data]);
+
+  if (!edition.data) {
+    return "loading...";
   }
 
   return (
     <div>
-      <Menu />
+      <Menu label={edition.data.name} />
 
       <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth">
-        <Tab label={`Sábado ${formatDate(edition.startDate)}`} value={edition.startDate} />
-        <Tab label={`Domingo ${formatDate(edition.endDate)}`} value={edition.endDate} />
+        <Tab
+          label={`Sábado ${formatDate(edition.data.startDate)}`}
+          value={edition.data.startDate}
+        />
+        <Tab
+          label={`Domingo ${formatDate(edition.data.endDate)}`}
+          value={edition.data.endDate}
+        />
       </Tabs>
 
       {getEventsResponse?.data && (
@@ -57,7 +86,10 @@ export default function Schedule() {
             timeScaleLabelComponent={DayViewLabel}
           />
 
-          <Appointments appointmentComponent={AppointmentItem} appointmentContentComponent={AppointmentContent} />
+          <Appointments
+            appointmentComponent={AppointmentItem}
+            appointmentContentComponent={AppointmentContent}
+          />
 
           <CurrentTimeIndicator updateInterval={60000} />
         </Scheduler>
@@ -65,7 +97,11 @@ export default function Schedule() {
 
       {isAdmin && (
         <Link href="/create">
-          <Fab component="a" sx={{ position: "fixed", bottom: 16, right: 16 }} color="secondary">
+          <Fab
+            component="a"
+            sx={{ position: "fixed", bottom: 16, right: 16 }}
+            color="secondary"
+          >
             <AddRounded />
           </Fab>
         </Link>

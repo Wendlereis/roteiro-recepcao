@@ -14,6 +14,11 @@ export const editionRouter = router({
 
     return edition;
   }),
+  getByActive: procedure.query(async () => {
+    const edition = await repository.findByActive(true);
+
+    return edition;
+  }),
   create: procedure
     .input(
       yup.object({

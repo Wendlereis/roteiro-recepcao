@@ -34,9 +34,9 @@ export async function findById(id) {
 export async function findByActive(active) {
   const db = await getDatabase();
 
-  const event = await db.collection("editions").findOne({ active });
+  const edition = await db.collection("editions").findOne({ active });
 
-  return event;
+  return edition;
 }
 
 export async function activateById(id) {
