@@ -16,15 +16,27 @@ export async function list() {
 export async function add(edition) {
   const db = await getDatabase();
 
-  await db.collection("editions").insertOne(edition);
+  const created = await db.collection("editions").insertOne(edition);
+
+  return created;
+}
+
+export async function findById(id) {
+  const db = await getDatabase();
+
+  const edition = await db
+    .collection("editions")
+    .findOne({ _id: new ObjectId(id) });
+
+  return edition;
 }
 
 export async function findByActive(active) {
   const db = await getDatabase();
 
-  const event = await db.collection("editions").findOne({ active });
+  const edition = await db.collection("editions").findOne({ active });
 
-  return event;
+  return edition;
 }
 
 export async function activateById(id) {

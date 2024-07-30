@@ -22,7 +22,7 @@ import { MenuRounded, LoginRounded, LogoutRounded } from "@mui/icons-material";
 
 import { usePermission } from "../../hook/usePermission";
 
-export function Menu() {
+export function Menu({ label }) {
   const { data, status } = useSession();
 
   const { isAdmin, isManager } = usePermission();
@@ -43,7 +43,12 @@ export function Menu() {
     <>
       <AppBar position="sticky">
         <Toolbar>
-          <Box display="flex" justifyContent="space-between" width="100%">
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+          >
             {isAdmin && (
               <IconButton
                 size="large"
@@ -55,6 +60,8 @@ export function Menu() {
                 <MenuRounded />
               </IconButton>
             )}
+
+            {label && <Typography variant="h6">{label}</Typography>}
 
             {!isAuthenticated && (
               <Box alignSelf="flex-end">

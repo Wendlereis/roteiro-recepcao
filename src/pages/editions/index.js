@@ -2,38 +2,24 @@ import React from "react";
 import { trpc } from "../../ultis/trpc";
 import { Menu } from "../../components/Menu/Menu";
 import {
+  Chip,
   Container,
   Fab,
-  FormControlLabel,
+  IconButton,
   List,
   ListItem,
   ListItemText,
-  Radio,
-  RadioGroup,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { AddRounded } from "@mui/icons-material";
+import { AddRounded, ChevronRightRounded } from "@mui/icons-material";
 import { format } from "date-fns";
 
 export default function Editions() {
-  const utils = trpc.useUtils();
-
   const edition = trpc.edition.get.useQuery();
-
-  const mutation = trpc.edition.setActive.useMutation({
-    onSuccess: () => {
-      utils.edition.get.invalidate();
-      edition.refetch();
-    },
-  });
 
   if (!edition.data) {
     return <div>Loading...</div>;
-  }
-
-  async function handleOnChange(event) {
-    mutation.mutateAsync({ id: event.target.value });
   }
 
   return (
@@ -56,12 +42,15 @@ export default function Editions() {
                 )} - ${format(new Date(edition.endDate), "dd/MM/yyyy")}`}
               />
 
-              <Radio
-                value={edition._id}
-                name={edition.name}
-                checked={edition.active}
-                onChange={handleOnChange}
-              />
+              {edition.active && (
+                <Chip label="Ativo" color="secondary" size="small" />
+              )}
+
+              <Link href={`/editions/${edition._id}`}>
+                <IconButton color="primary">
+                  <ChevronRightRounded />
+                </IconButton>
+              </Link>
             </ListItem>
           ))}
         </List>

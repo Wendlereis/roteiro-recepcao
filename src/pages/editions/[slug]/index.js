@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { trpc } from "../../../ultis/trpc";
+import { useQuery } from "@tanstack/react-query";
 
-import Link from "next/link";
-
-import { trpc } from "../ultis/trpc";
-
-import { Fab, Tab, Tabs } from "@mui/material";
-import { AddRounded } from "@mui/icons-material";
+import { getEvents } from "../../../api/event";
+import { Menu } from "../../../components/Menu/Menu";
+import { Tab, Tabs } from "@mui/material";
+import { useEffect, useState } from "react";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
 import {
@@ -15,36 +15,29 @@ import {
   CurrentTimeIndicator,
 } from "@devexpress/dx-react-scheduler-material-ui";
 
-import { useQuery } from "@tanstack/react-query";
+import { DayViewCell } from "../../../components/DayViewCell";
+import { DayViewLabel } from "../../../components/DayViewLabel";
+import { AppointmentItem } from "../../../components/AppointmentItem";
+import { AppointmentContent } from "../../../components/AppointmentContent";
 
-import { DayViewCell } from "../components/DayViewCell";
-import { DayViewLabel } from "../components/DayViewLabel";
-import { AppointmentItem } from "../components/AppointmentItem";
-import { AppointmentContent } from "../components/AppointmentContent";
+function formatDate(date) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    month: "short",
+    day: "numeric",
+  }).format(new Date(date));
+}
 
-import { getEvents } from "../api/event";
+export default function EditionDetails() {
+  const router = useRouter();
 
-import { usePermission } from "../hook/usePermission";
-import { Menu } from "../components/Menu/Menu";
-
-export default function Schedule() {
   const { data: getEventsResponse } = useQuery(["events"], getEvents);
 
-  const edition = trpc.edition.getByActive.useQuery();
+  const edition = trpc.edition.getById.useQuery(String(router.query.slug));
 
   const [selectedTab, setSelectedTab] = useState();
 
-  const { isAdmin } = usePermission();
-
   function handleTabChange(_, tab) {
     setSelectedTab(tab);
-  }
-
-  function formatDate(date) {
-    return new Intl.DateTimeFormat("pt-BR", {
-      month: "short",
-      day: "numeric",
-    }).format(new Date(date));
   }
 
   useEffect(() => {
@@ -56,7 +49,7 @@ export default function Schedule() {
   }, [edition.data]);
 
   if (!edition.data) {
-    return "loading...";
+    return "loading..";
   }
 
   return (
@@ -66,11 +59,11 @@ export default function Schedule() {
       <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth">
         <Tab
           label={`Sábado ${formatDate(edition.data.startDate)}`}
-          value={edition.data.startDate}
+          value={edition.data.startDate.toISOString()}
         />
         <Tab
           label={`Domingo ${formatDate(edition.data.endDate)}`}
-          value={edition.data.endDate}
+          value={edition.data.endDate.toISOString()}
         />
       </Tabs>
 
@@ -93,18 +86,6 @@ export default function Schedule() {
 
           <CurrentTimeIndicator updateInterval={60000} />
         </Scheduler>
-      )}
-
-      {isAdmin && (
-        <Link href="/create">
-          <Fab
-            component="a"
-            sx={{ position: "fixed", bottom: 16, right: 16 }}
-            color="secondary"
-          >
-            <AddRounded />
-          </Fab>
-        </Link>
       )}
     </div>
   );

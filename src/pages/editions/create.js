@@ -14,14 +14,15 @@ export default function CreateEdition() {
   const mutation = trpc.edition.create.useMutation();
 
   async function onSubmit(edtion) {
-    mutation.mutate({ ...edtion, active: true });
+    mutation.mutate(
+      { ...edtion, active: true },
+      {
+        onSuccess() {
+          push("/");
+        },
+      }
+    );
   }
-
-  useEffect(() => {
-    if (mutation.isSuccess) {
-      push("/editions");
-    }
-  }, [mutation, push]);
 
   return (
     <>
