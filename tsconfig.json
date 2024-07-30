@@ -22,10 +22,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx", 
-    "src/pages/editions/[slug]/index.jsx",
-    "src/pages/editions/create.jsx",
-    "src/pages/editions/index.jsx"
+    "**/*.tsx",
   ],
   "exclude": [
     "node_modules"
