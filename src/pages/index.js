@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
+import { useState, useEffect, useMemo } from "react";
 
 import Link from "next/link";
 
@@ -6,6 +8,8 @@ import { trpc } from "../ultis/trpc";
 
 import { Fab, Tab, Tabs } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
+
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
 import {
@@ -26,9 +30,21 @@ import { getEvents } from "../api/event";
 
 import { usePermission } from "../hook/usePermission";
 import { Menu } from "../components/Menu/Menu";
+import { ptBR } from "date-fns/locale";
+import {
+  format,
+  getDay,
+  parse,
+  setHours,
+  setMinutes,
+  startOfWeek,
+} from "date-fns";
+import { useRouter } from "next/router";
 
 export default function Schedule() {
   const { data: getEventsResponse } = useQuery(["events"], getEvents);
+
+  const { push } = useRouter();
 
   const edition = trpc.edition.getByActive.useQuery();
 
@@ -47,6 +63,15 @@ export default function Schedule() {
     }).format(new Date(date));
   }
 
+  const components = useMemo(
+    () => ({
+      day: {
+        event: ({ event }) => event.title,
+      },
+    }),
+    []
+  );
+
   useEffect(() => {
     if (edition.data) {
       const start = edition.data.startDate.toISOString();
@@ -58,6 +83,26 @@ export default function Schedule() {
   if (!edition.data) {
     return "loading...";
   }
+
+  const locales = {
+    "pt-BR": ptBR,
+  };
+
+  const localizer = dateFnsLocalizer({
+    format,
+    parse,
+    startOfWeek,
+    getDay,
+    locales,
+  });
+
+  const events = getEventsResponse?.data.map((event) => ({
+    id: event._id,
+    title: event.title,
+    start: new Date(event.startDate),
+    end: new Date(event.endDate),
+    color: event.color,
+  }));
 
   return (
     <div>
@@ -75,24 +120,39 @@ export default function Schedule() {
       </Tabs>
 
       {getEventsResponse?.data && (
-        <Scheduler data={getEventsResponse?.data}>
-          <ViewState currentDate={selectedTab} />
+        <Calendar
+          style={{ height: "100vh" }}
+          localizer={localizer}
+          date={new Date(selectedTab)}
+          timeslots={1}
+          step={10}
+          min={setMinutes(setHours(new Date(selectedTab), 7), 0)}
+          max={setMinutes(setHours(new Date(selectedTab), 20), 40)}
+          defaultView="day"
+          events={events}
+          components={components}
+          toolbar={false}
+          onSelectEvent={(event) => push(`/${event.id}/edit`)}
+        />
 
-          <DayView
-            startDayHour={7}
-            endDayHour={20.5}
-            cellDuration={10}
-            dayScaleCellComponent={DayViewCell}
-            timeScaleLabelComponent={DayViewLabel}
-          />
+        // <Scheduler data={getEventsResponse?.data}>
+        //   <ViewState currentDate={selectedTab} />
 
-          <Appointments
-            appointmentComponent={AppointmentItem}
-            appointmentContentComponent={AppointmentContent}
-          />
+        //   <DayView
+        //     startDayHour={7}
+        //     endDayHour={20.5}
+        //     cellDuration={10}
+        //     dayScaleCellComponent={DayViewCell}
+        //     timeScaleLabelComponent={DayViewLabel}
+        //   />
 
-          <CurrentTimeIndicator updateInterval={60000} />
-        </Scheduler>
+        //   <Appointments
+        //     appointmentComponent={AppointmentItem}
+        //     appointmentContentComponent={AppointmentContent}
+        //   />
+
+        //   <CurrentTimeIndicator updateInterval={60000} />
+        // </Scheduler>
       )}
 
       {isAdmin && (
