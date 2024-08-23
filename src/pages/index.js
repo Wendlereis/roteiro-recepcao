@@ -10,6 +10,7 @@ import { Fab, Tab, Tabs } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import EventWrapper from "react-big-calendar/lib/EventWrapper";
 
 import { ViewState } from "@devexpress/dx-react-scheduler";
 import {
@@ -62,15 +63,6 @@ export default function Schedule() {
       day: "numeric",
     }).format(new Date(date));
   }
-
-  const components = useMemo(
-    () => ({
-      day: {
-        event: ({ event }) => event.title,
-      },
-    }),
-    []
-  );
 
   useEffect(() => {
     if (edition.data) {
@@ -130,7 +122,11 @@ export default function Schedule() {
           max={setMinutes(setHours(new Date(selectedTab), 20), 40)}
           defaultView="day"
           events={events}
-          components={components}
+          eventPropGetter={(event) => ({
+            style: {
+              background: event.color,
+            },
+          })}
           toolbar={false}
           onSelectEvent={(event) => push(`/${event.id}/edit`)}
         />
