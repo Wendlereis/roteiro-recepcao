@@ -10,22 +10,8 @@ import { Fab, Tab, Tabs } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import EventWrapper from "react-big-calendar/lib/EventWrapper";
-
-import { ViewState } from "@devexpress/dx-react-scheduler";
-import {
-  Scheduler,
-  DayView,
-  Appointments,
-  CurrentTimeIndicator,
-} from "@devexpress/dx-react-scheduler-material-ui";
 
 import { useQuery } from "@tanstack/react-query";
-
-import { DayViewCell } from "../components/DayViewCell";
-import { DayViewLabel } from "../components/DayViewLabel";
-import { AppointmentItem } from "../components/AppointmentItem";
-import { AppointmentContent } from "../components/AppointmentContent";
 
 import { getEvents } from "../api/event";
 
@@ -125,30 +111,12 @@ export default function Schedule() {
           eventPropGetter={(event) => ({
             style: {
               background: event.color,
+              borderColor: "transparent",
             },
           })}
           toolbar={false}
           onSelectEvent={(event) => push(`/${event.id}/edit`)}
         />
-
-        // <Scheduler data={getEventsResponse?.data}>
-        //   <ViewState currentDate={selectedTab} />
-
-        //   <DayView
-        //     startDayHour={7}
-        //     endDayHour={20.5}
-        //     cellDuration={10}
-        //     dayScaleCellComponent={DayViewCell}
-        //     timeScaleLabelComponent={DayViewLabel}
-        //   />
-
-        //   <Appointments
-        //     appointmentComponent={AppointmentItem}
-        //     appointmentContentComponent={AppointmentContent}
-        //   />
-
-        //   <CurrentTimeIndicator updateInterval={60000} />
-        // </Scheduler>
       )}
 
       {isAdmin && (
