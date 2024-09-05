@@ -82,6 +82,14 @@ export default function Schedule() {
     color: event.color,
   }));
 
+  function handleOnSelectEvent(event) {
+    if (!isAdmin) {
+      return;
+    }
+
+    push(`/${event.id}/edit`);
+  }
+
   return (
     <div>
       <Menu label={edition.data.name} />
@@ -109,7 +117,7 @@ export default function Schedule() {
           defaultView="day"
           events={events}
           toolbar={false}
-          onSelectEvent={(event) => push(`/${event.id}/edit`)}
+          onSelectEvent={handleOnSelectEvent}
           formats={{
             eventTimeRangeFormat: (range) => `${format(range.start, "HH:mm")}`,
           }}
