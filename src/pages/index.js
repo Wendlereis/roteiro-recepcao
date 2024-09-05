@@ -108,14 +108,17 @@ export default function Schedule() {
           max={setMinutes(setHours(new Date(selectedTab), 20), 40)}
           defaultView="day"
           events={events}
+          toolbar={false}
+          onSelectEvent={(event) => push(`/${event.id}/edit`)}
+          formats={{
+            eventTimeRangeFormat: (range) => `${format(range.start, "HH:mm")}`,
+          }}
           eventPropGetter={(event) => ({
             style: {
               background: event.color,
               borderColor: "transparent",
             },
           })}
-          toolbar={false}
-          onSelectEvent={(event) => push(`/${event.id}/edit`)}
         />
       )}
 
