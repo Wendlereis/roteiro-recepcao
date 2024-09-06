@@ -114,29 +114,29 @@ export function Menu({ label }) {
 
         {isManager && (
           <>
-            <Link href="/">
-              <ListItem>
-                <ListItemButton>
+            <ListItem>
+              <ListItemButton>
+                <Link href="/">
                   <ListItemText primary="Roteiro" />
-                </ListItemButton>
-              </ListItem>
-            </Link>
+                </Link>
+              </ListItemButton>
+            </ListItem>
 
-            <Link href="/editions">
-              <ListItem>
-                <ListItemButton>
+            <ListItem>
+              <ListItemButton>
+                <Link href="/editions">
                   <ListItemText primary="Encontros" />
-                </ListItemButton>
-              </ListItem>
-            </Link>
+                </Link>
+              </ListItemButton>
+            </ListItem>
 
-            <Link href="/users">
-              <ListItem>
-                <ListItemButton href="/users">
+            <ListItem>
+              <ListItemButton>
+                <Link href="/users">
                   <ListItemText primary="Usuários" />
-                </ListItemButton>
-              </ListItem>
-            </Link>
+                </Link>
+              </ListItemButton>
+            </ListItem>
           </>
         )}
 
