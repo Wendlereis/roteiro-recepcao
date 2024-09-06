@@ -13,6 +13,7 @@ import {
   IconButton,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
   Toolbar,
   Typography,
@@ -93,7 +94,7 @@ export function Menu({ label }) {
       <Drawer
         open={isOpen}
         anchor="left"
-        PaperProps={{ sx: { width: "80%" } }}
+        PaperProps={{ sx: { width: "70%" } }}
         onClose={handleOnClose}
       >
         <Box
@@ -111,25 +112,31 @@ export function Menu({ label }) {
 
         <Divider />
 
-        <ListItem>
-          <ListItemButton LinkComponent={Link} href="/">
-            <ListItemText primary="Roteiro" />
-          </ListItemButton>
-        </ListItem>
-
         {isManager && (
           <>
-            <ListItem>
-              <ListItemButton LinkComponent={Link} href="/editions">
-                <ListItemText primary="Encontro" />
-              </ListItemButton>
-            </ListItem>
+            <Link href="/">
+              <ListItem>
+                <ListItemButton>
+                  <ListItemText primary="Roteiro" />
+                </ListItemButton>
+              </ListItem>
+            </Link>
 
-            <ListItem>
-              <ListItemButton LinkComponent={Link} href="/users">
-                <ListItemText primary="Usuários" />
-              </ListItemButton>
-            </ListItem>
+            <Link href="/editions">
+              <ListItem>
+                <ListItemButton>
+                  <ListItemText primary="Encontros" />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+
+            <Link href="/users">
+              <ListItem>
+                <ListItemButton href="/users">
+                  <ListItemText primary="Usuários" />
+                </ListItemButton>
+              </ListItem>
+            </Link>
           </>
         )}
 
@@ -139,9 +146,13 @@ export function Menu({ label }) {
 
             <ListItem>
               <ListItemButton onClick={signOut}>
+                <ListItemIcon>
+                  <LogoutRounded color="error" />
+                </ListItemIcon>
+
                 <ListItemText
                   primary="Sair"
-                  primaryTypographyProps={{ color: "error.dark" }}
+                  primaryTypographyProps={{ color: "error", fontWeight: 500 }}
                 />
               </ListItemButton>
             </ListItem>
