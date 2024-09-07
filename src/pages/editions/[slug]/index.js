@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getEvents } from "../../../api/event";
 import { Menu } from "../../../components/Menu/Menu";
-import { Tab, Tabs } from "@mui/material";
+
 import { useEffect, useState } from "react";
 
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
@@ -20,13 +20,7 @@ import {
   setMinutes,
   startOfWeek,
 } from "date-fns";
-
-function formatDate(date) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    month: "short",
-    day: "numeric",
-  }).format(new Date(date));
-}
+import { EditionTab } from "../../../components/EditionTab/EditionTab";
 
 export default function EditionDetails() {
   const router = useRouter();
@@ -35,22 +29,20 @@ export default function EditionDetails() {
 
   const edition = trpc.edition.getById.useQuery(String(router.query.slug));
 
-  const [selectedTab, setSelectedTab] = useState();
+  const [calendarDate, setCalendarDate] = useState();
 
-  function handleTabChange(_, tab) {
-    setSelectedTab(tab);
+  function handleOnEditionTabChange(tab) {
+    setCalendarDate(new Date(tab));
   }
 
   useEffect(() => {
     if (edition.data) {
-      const start = edition.data.startDate.toISOString();
-
-      setSelectedTab(start);
+      setCalendarDate(edition.data.startDate);
     }
   }, [edition.data]);
 
   if (!edition.data) {
-    return "loading..";
+    return "loading...";
   }
 
   const locales = {
@@ -77,26 +69,21 @@ export default function EditionDetails() {
     <div>
       <Menu label={edition.data.name} />
 
-      <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth">
-        <Tab
-          label={`Sábado ${formatDate(edition.data.startDate)}`}
-          value={edition.data.startDate.toISOString()}
-        />
-        <Tab
-          label={`Domingo ${formatDate(edition.data.endDate)}`}
-          value={edition.data.endDate.toISOString()}
-        />
-      </Tabs>
+      <EditionTab
+        start={edition.data.startDate.toISOString()}
+        end={edition.data.endDate.toISOString()}
+        onChange={handleOnEditionTabChange}
+      />
 
-      {getEventsResponse?.data && (
+      {events && (
         <Calendar
           style={{ height: "100vh" }}
           localizer={localizer}
-          date={new Date(selectedTab)}
+          date={calendarDate}
           timeslots={1}
           step={10}
-          min={setMinutes(setHours(new Date(selectedTab), 7), 0)}
-          max={setMinutes(setHours(new Date(selectedTab), 20), 40)}
+          min={setMinutes(setHours(calendarDate, 7), 0)}
+          max={setMinutes(setHours(calendarDate, 20), 40)}
           defaultView="day"
           events={events}
           toolbar={false}

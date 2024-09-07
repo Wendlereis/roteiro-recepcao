@@ -1,23 +1,13 @@
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-import { trpc } from "../ultis/trpc";
-
-import { Fab, Tab, Tabs } from "@mui/material";
+import { Fab } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-
-import { useQuery } from "@tanstack/react-query";
-
-import { getEvents } from "../api/event";
-
-import { usePermission } from "../hook/usePermission";
-import { Menu } from "../components/Menu/Menu";
-import { ptBR } from "date-fns/locale";
 import {
   format,
   getDay,
@@ -26,40 +16,32 @@ import {
   setMinutes,
   startOfWeek,
 } from "date-fns";
-import { useRouter } from "next/router";
+import { ptBR } from "date-fns/locale";
+
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+
+import { useQuery } from "@tanstack/react-query";
+
+import { getEvents } from "../api/event";
+import { trpc } from "../ultis/trpc";
+
+import { Menu } from "../components/Menu/Menu";
+import { EditionTab } from "../components/EditionTab/EditionTab";
+
+import { usePermission } from "../hook/usePermission";
 
 export default function Schedule() {
-  const { data: getEventsResponse } = useQuery(["events"], getEvents);
-
   const { push } = useRouter();
+  const { isAdmin } = usePermission();
+
+  const { data: getEventsResponse } = useQuery(["events"], getEvents);
 
   const edition = trpc.edition.getByActive.useQuery();
 
-  const [selectedTab, setSelectedTab] = useState();
+  const [calendarDate, setCalendarDate] = useState();
 
-  const { isAdmin } = usePermission();
-
-  function handleTabChange(_, tab) {
-    setSelectedTab(tab);
-  }
-
-  function formatDate(date) {
-    return new Intl.DateTimeFormat("pt-BR", {
-      month: "short",
-      day: "numeric",
-    }).format(new Date(date));
-  }
-
-  useEffect(() => {
-    if (edition.data) {
-      const start = edition.data.startDate.toISOString();
-
-      setSelectedTab(start);
-    }
-  }, [edition.data]);
-
-  if (!edition.data) {
-    return "loading...";
+  function handleOnEditionTabChange(tab) {
+    setCalendarDate(new Date(tab));
   }
 
   const locales = {
@@ -90,30 +72,35 @@ export default function Schedule() {
     push(`/${event.id}/edit`);
   }
 
+  useEffect(() => {
+    if (edition.data) {
+      setCalendarDate(edition.data.startDate);
+    }
+  }, [edition.data]);
+
+  if (!edition.data) {
+    return "loading...";
+  }
+
   return (
     <div>
       <Menu label={edition.data.name} />
 
-      <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth">
-        <Tab
-          label={`Sábado ${formatDate(edition.data.startDate)}`}
-          value={edition.data.startDate}
-        />
-        <Tab
-          label={`Domingo ${formatDate(edition.data.endDate)}`}
-          value={edition.data.endDate}
-        />
-      </Tabs>
+      <EditionTab
+        start={edition.data.startDate.toISOString()}
+        end={edition.data.endDate.toISOString()}
+        onChange={handleOnEditionTabChange}
+      />
 
-      {getEventsResponse?.data && (
+      {events && (
         <Calendar
           style={{ height: "100vh" }}
           localizer={localizer}
-          date={new Date(selectedTab)}
+          date={calendarDate}
           timeslots={1}
           step={10}
-          min={setMinutes(setHours(new Date(selectedTab), 7), 0)}
-          max={setMinutes(setHours(new Date(selectedTab), 20), 40)}
+          min={setMinutes(setHours(calendarDate, 7), 0)}
+          max={setMinutes(setHours(calendarDate, 20), 40)}
           defaultView="day"
           events={events}
           toolbar={false}
