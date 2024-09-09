@@ -1,7 +1,13 @@
 import { format } from "date-fns";
 
 function eventTimeRangeFormat(range) {
-  return `${format(range.start, "HH:mm")}`;
+  const { start, end } = range;
+
+  return `${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
 }
 
-export const formatter = { eventTimeRangeFormat };
+function timeGutterFormat(date) {
+  return `${format(date, "HH:mm")}`;
+}
+
+export const formatter = { eventTimeRangeFormat, timeGutterFormat };
