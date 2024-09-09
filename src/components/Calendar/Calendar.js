@@ -17,7 +17,7 @@ export function Calendar({ day, events, onSelectEvent }) {
       style: {
         background: event.color,
         borderColor: "transparent",
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: 600,
       },
     };
