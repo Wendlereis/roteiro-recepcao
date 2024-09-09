@@ -6,21 +6,29 @@ import { useQuery } from "@tanstack/react-query";
 import { Box, Button, Stack, Typography, MenuItem } from "@mui/material";
 
 import { getCategories } from "../../api/category";
+import { trpc } from "../../ultis/trpc";
 
 import { Input } from "../Input";
-
-import { edition } from "../../ultis/date";
 
 export function EventForm({ mode = "create", onSubmit, defaultValues }) {
   const methods = useForm();
 
   const { data: getCategoriesResponse } = useQuery(["categories"], getCategories);
 
+  const edition = trpc.edition.getByActive.useQuery();
+
   const updatedAtFormatted = mode === "edit" && format(parseISO(defaultValues?.updatedAt), "dd/MM/yyyy hh:mm");
 
   function getDefaultValueOrNull(value) {
     return value ? value : null;
   }
+
+  if (!edition.data) {
+    return "loading...";
+  }
+
+  const startDateValue = new Date(edition.data.startDate).toISOString();
+  const endDateValue = new Date(edition.data.endDate).toISOString();
 
   return (
     <FormProvider {...methods}>
@@ -36,11 +44,11 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
         </Input>
 
         <Input name="day" label="Dia" defaultValue={getDefaultValueOrNull(defaultValues?.day)} select>
-          <MenuItem key={edition.startDate} value={edition.startDate}>
+          <MenuItem key={startDateValue} value={startDateValue}>
             Sábado
           </MenuItem>
 
-          <MenuItem key={edition.endDate} value={edition.endDate}>
+          <MenuItem key={endDateValue} value={endDateValue}>
             Domingo
           </MenuItem>
         </Input>
