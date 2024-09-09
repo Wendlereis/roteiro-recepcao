@@ -42,8 +42,6 @@ export default function EditionDetails() {
     color: event.color,
   }));
 
-  console.log(calendarDate);
-
   return (
     <div>
       <Menu label={edition.data.name} />
