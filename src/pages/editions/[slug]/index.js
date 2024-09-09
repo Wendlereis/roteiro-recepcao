@@ -1,26 +1,15 @@
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
-import { trpc } from "../../../ultis/trpc";
+
 import { useQuery } from "@tanstack/react-query";
 
 import { getEvents } from "../../../api/event";
+import { trpc } from "../../../ultis/trpc";
+
 import { Menu } from "../../../components/Menu/Menu";
-
-import { useEffect, useState } from "react";
-
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-
-import { ptBR } from "date-fns/locale";
-import {
-  format,
-  getDay,
-  parse,
-  setHours,
-  setMinutes,
-  startOfWeek,
-} from "date-fns";
 import { EditionTab } from "../../../components/EditionTab/EditionTab";
+import { Calendar } from "../../../components/Calendar/Calendar";
 
 export default function EditionDetails() {
   const router = useRouter();
@@ -45,18 +34,6 @@ export default function EditionDetails() {
     return "loading...";
   }
 
-  const locales = {
-    "pt-BR": ptBR,
-  };
-
-  const localizer = dateFnsLocalizer({
-    format,
-    parse,
-    startOfWeek,
-    getDay,
-    locales,
-  });
-
   const events = getEventsResponse?.data.map((event) => ({
     id: event._id,
     title: event.title,
@@ -64,6 +41,8 @@ export default function EditionDetails() {
     end: new Date(event.endDate),
     color: event.color,
   }));
+
+  console.log(calendarDate);
 
   return (
     <div>
@@ -75,29 +54,7 @@ export default function EditionDetails() {
         onChange={handleOnEditionTabChange}
       />
 
-      {events && (
-        <Calendar
-          style={{ height: "100vh" }}
-          localizer={localizer}
-          date={calendarDate}
-          timeslots={1}
-          step={10}
-          min={setMinutes(setHours(calendarDate, 7), 0)}
-          max={setMinutes(setHours(calendarDate, 20), 40)}
-          defaultView="day"
-          events={events}
-          toolbar={false}
-          formats={{
-            eventTimeRangeFormat: (range) => `${format(range.start, "HH:mm")}`,
-          }}
-          eventPropGetter={(event) => ({
-            style: {
-              background: event.color,
-              borderColor: "transparent",
-            },
-          })}
-        />
-      )}
+      {events && <Calendar day={calendarDate} events={events} />}
     </div>
   );
 }

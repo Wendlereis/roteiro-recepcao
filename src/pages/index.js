@@ -1,5 +1,3 @@
-import "react-big-calendar/lib/css/react-big-calendar.css";
-
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
