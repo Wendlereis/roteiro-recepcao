@@ -1,8 +1,3 @@
-export const edition = {
-  startDate: new Date(2024, 4, 18).toISOString(),
-  endDate: new Date(2024, 4, 19).toISOString(),
-};
-
 export function removeSeconds(date) {
   return new Date(date.setSeconds(0, 0));
 }
