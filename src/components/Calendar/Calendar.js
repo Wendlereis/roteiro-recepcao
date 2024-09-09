@@ -17,6 +17,19 @@ export function Calendar({ day, events, onSelectEvent }) {
       style: {
         background: event.color,
         borderColor: "transparent",
+        fontSize: 13,
+        fontWeight: 600,
+      },
+    };
+  }
+
+  function getHourStyles() {
+    return {
+      style: {
+        fontSize: 12,
+        fontWeight: 600,
+        color: "#9e9e9e",
+        marginLeft: 8,
       },
     };
   }
@@ -33,6 +46,7 @@ export function Calendar({ day, events, onSelectEvent }) {
       timeslots={1}
       toolbar={false}
       eventPropGetter={getEventStyles}
+      slotPropGetter={getHourStyles}
       onSelectEvent={onSelectEvent}
       formats={formatter}
     />
