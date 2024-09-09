@@ -8,18 +8,6 @@ import { useRouter } from "next/router";
 import { Fab } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
-import {
-  format,
-  getDay,
-  parse,
-  setHours,
-  setMinutes,
-  startOfWeek,
-} from "date-fns";
-import { ptBR } from "date-fns/locale";
-
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-
 import { useQuery } from "@tanstack/react-query";
 
 import { getEvents } from "../api/event";
@@ -27,6 +15,7 @@ import { trpc } from "../ultis/trpc";
 
 import { Menu } from "../components/Menu/Menu";
 import { EditionTab } from "../components/EditionTab/EditionTab";
+import { Calendar } from "../components/Calendar/Calendar";
 
 import { usePermission } from "../hook/usePermission";
 
@@ -43,18 +32,6 @@ export default function Schedule() {
   function handleOnEditionTabChange(tab) {
     setCalendarDate(new Date(tab));
   }
-
-  const locales = {
-    "pt-BR": ptBR,
-  };
-
-  const localizer = dateFnsLocalizer({
-    format,
-    parse,
-    startOfWeek,
-    getDay,
-    locales,
-  });
 
   const events = getEventsResponse?.data.map((event) => ({
     id: event._id,
@@ -94,26 +71,9 @@ export default function Schedule() {
 
       {events && (
         <Calendar
-          style={{ height: "100vh" }}
-          localizer={localizer}
-          date={calendarDate}
-          timeslots={1}
-          step={10}
-          min={setMinutes(setHours(calendarDate, 7), 0)}
-          max={setMinutes(setHours(calendarDate, 20), 40)}
-          defaultView="day"
+          day={calendarDate}
           events={events}
-          toolbar={false}
           onSelectEvent={handleOnSelectEvent}
-          formats={{
-            eventTimeRangeFormat: (range) => `${format(range.start, "HH:mm")}`,
-          }}
-          eventPropGetter={(event) => ({
-            style: {
-              background: event.color,
-              borderColor: "transparent",
-            },
-          })}
         />
       )}
 
