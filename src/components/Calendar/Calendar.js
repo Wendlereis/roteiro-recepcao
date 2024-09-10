@@ -12,6 +12,14 @@ export function Calendar({ day, events, onSelectEvent }) {
 
   const endHourDay = setMinutes(setHours(day, 20), 40);
 
+  const data = events.map((event) => ({
+    id: event._id,
+    title: event.title,
+    start: new Date(event.startDate),
+    end: new Date(event.endDate),
+    color: event.color,
+  }));
+
   function getEventStyles(event) {
     return {
       style: {
@@ -41,7 +49,7 @@ export function Calendar({ day, events, onSelectEvent }) {
       min={startHourDay}
       max={endHourDay}
       localizer={localizer}
-      events={events}
+      events={data}
       step={10}
       timeslots={1}
       toolbar={false}
