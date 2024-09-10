@@ -42,6 +42,18 @@ export async function findByStartDate(date) {
   return events;
 }
 
+export async function findByDateRange(start, end) {
+  const db = await getDatabase();
+
+  const events = await db
+    .collection("eventos")
+    .find({ startDate: { $gte: start }, endDate: { $lte: end } })
+    .sort({ startDate: 1 })
+    .toArray();
+
+  return events;
+}
+
 export async function edit(event) {
   const db = await getDatabase();
 
