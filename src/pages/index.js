@@ -6,9 +6,6 @@ import { useRouter } from "next/router";
 import { Fab } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 
-import { useQuery } from "@tanstack/react-query";
-
-import { getEvents } from "../api/event";
 import { trpc } from "../ultis/trpc";
 
 import { Menu } from "../components/Menu/Menu";
@@ -21,23 +18,13 @@ export default function Schedule() {
   const { push } = useRouter();
   const { isAdmin } = usePermission();
 
-  const { data: getEventsResponse } = useQuery(["events"], getEvents);
-
-  const edition = trpc.edition.getByActive.useQuery();
+  const { data } = trpc.event.get.useQuery();
 
   const [calendarDate, setCalendarDate] = useState();
 
   function handleOnEditionTabChange(tab) {
     setCalendarDate(new Date(tab));
   }
-
-  const events = getEventsResponse?.data.map((event) => ({
-    id: event._id,
-    title: event.title,
-    start: new Date(event.startDate),
-    end: new Date(event.endDate),
-    color: event.color,
-  }));
 
   function handleOnSelectEvent(event) {
     if (!isAdmin) {
@@ -48,29 +35,29 @@ export default function Schedule() {
   }
 
   useEffect(() => {
-    if (!calendarDate && edition.data) {
-      setCalendarDate(edition.data.startDate);
+    if (!calendarDate && data) {
+      setCalendarDate(data.edition.startDate);
     }
-  }, [calendarDate, edition.data]);
+  }, [calendarDate, data]);
 
-  if (!edition.data) {
+  if (!data) {
     return "loading...";
   }
 
   return (
     <div>
-      <Menu label={edition.data.name} />
+      <Menu label={data.edition.name} />
 
       <EditionTab
-        start={edition.data.startDate.toISOString()}
-        end={edition.data.endDate.toISOString()}
+        start={data.edition.startDate.toISOString()}
+        end={data.edition.endDate.toISOString()}
         onChange={handleOnEditionTabChange}
       />
 
-      {events && (
+      {calendarDate && (
         <Calendar
           day={calendarDate}
-          events={events}
+          events={data.events}
           onSelectEvent={handleOnSelectEvent}
         />
       )}
