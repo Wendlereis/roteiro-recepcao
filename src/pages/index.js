@@ -61,6 +61,8 @@ export default function Schedule() {
     <div>
       <Menu label={edition.data.name} />
 
+      PREVIEW
+
       <EditionTab
         start={edition.data.startDate.toISOString()}
         end={edition.data.endDate.toISOString()}
