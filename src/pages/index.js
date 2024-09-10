@@ -48,10 +48,10 @@ export default function Schedule() {
   }
 
   useEffect(() => {
-    if (edition.data) {
+    if (!calendarDate && edition.data) {
       setCalendarDate(edition.data.startDate);
     }
-  }, [edition.data]);
+  }, [calendarDate, edition.data]);
 
   if (!edition.data) {
     return "loading...";
