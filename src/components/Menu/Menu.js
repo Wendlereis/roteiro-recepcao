@@ -22,9 +22,12 @@ import {
 import { MenuRounded, LoginRounded, LogoutRounded } from "@mui/icons-material";
 
 import { usePermission } from "../../hook/usePermission";
+import { useRouter } from "next/router";
 
 export function Menu({ label }) {
   const { data, status } = useSession();
+
+  const { push } = useRouter();
 
   const { isAdmin, isManager } = usePermission();
 
@@ -38,6 +41,11 @@ export function Menu({ label }) {
 
   function handleOnClose() {
     setIsOpen(false);
+  }
+
+  async function handleOnSignOutClick() {
+    await push("/");
+    signOut();
   }
 
   return (
@@ -81,7 +89,7 @@ export function Menu({ label }) {
                 <Button
                   color="inherit"
                   startIcon={<LogoutRounded />}
-                  onClick={signOut}
+                  onClick={handleOnSignOutClick}
                 >
                   Sair
                 </Button>
@@ -145,7 +153,7 @@ export function Menu({ label }) {
             <Divider />
 
             <ListItem>
-              <ListItemButton onClick={signOut}>
+              <ListItemButton onClick={handleOnSignOutClick}>
                 <ListItemIcon>
                   <LogoutRounded color="error" />
                 </ListItemIcon>
