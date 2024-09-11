@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { useQuery } from "@tanstack/react-query";
-
-import { getEvents } from "../../../api/event";
 import { trpc } from "../../../ultis/trpc";
 
 import { Menu } from "../../../components/Menu/Menu";
@@ -14,9 +11,7 @@ import { Calendar } from "../../../components/Calendar/Calendar";
 export default function EditionDetails() {
   const router = useRouter();
 
-  const { data: getEventsResponse } = useQuery(["events"], getEvents);
-
-  const edition = trpc.edition.getById.useQuery(String(router.query.slug));
+  const { data } = trpc.event.get.useQuery();
 
   const [calendarDate, setCalendarDate] = useState();
 
@@ -25,34 +20,26 @@ export default function EditionDetails() {
   }
 
   useEffect(() => {
-    if (!calendarDate && edition.data) {
-      setCalendarDate(edition.data.startDate);
+    if (!calendarDate && data) {
+      setCalendarDate(data.edition.startDate);
     }
-  }, [calendarDate, edition.data]);
+  }, [calendarDate, data]);
 
-  if (!edition.data) {
+  if (!data) {
     return "loading...";
   }
 
-  const events = getEventsResponse?.data.map((event) => ({
-    id: event._id,
-    title: event.title,
-    start: new Date(event.startDate),
-    end: new Date(event.endDate),
-    color: event.color,
-  }));
-
   return (
     <div>
-      <Menu label={edition.data.name} />
+      <Menu label={data.edition.name} />
 
       <EditionTab
-        start={edition.data.startDate.toISOString()}
-        end={edition.data.endDate.toISOString()}
+        start={data.edition.startDate.toISOString()}
+        end={data.edition.endDate.toISOString()}
         onChange={handleOnEditionTabChange}
       />
 
-      {events && <Calendar day={calendarDate} events={events} />}
+      {calendarDate && <Calendar day={calendarDate} events={data.events} />}
     </div>
   );
 }
