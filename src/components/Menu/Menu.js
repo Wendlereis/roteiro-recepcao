@@ -50,7 +50,7 @@ export function Menu({ label }) {
 
   return (
     <>
-      <AppBar position="sticky">
+      <AppBar position="sticky" sx={{ bgcolor: 'common.white', color: 'text.primary' }}>
         <Toolbar>
           <Box
             display="flex"

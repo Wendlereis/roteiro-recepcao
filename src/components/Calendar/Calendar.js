@@ -27,6 +27,7 @@ export function Calendar({ day, events, onSelectEvent }) {
         borderColor: "transparent",
         fontSize: 14,
         fontWeight: 600,
+        color: "#00000099",
       },
     };
   }
@@ -35,8 +36,8 @@ export function Calendar({ day, events, onSelectEvent }) {
     return {
       style: {
         fontSize: 12,
-        fontWeight: 600,
-        color: "#9e9e9e",
+        fontWeight: 500,
+        color: "#00000099",
         marginLeft: 8,
       },
     };
