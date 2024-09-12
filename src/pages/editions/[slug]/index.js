@@ -11,7 +11,7 @@ import { Calendar } from "../../../components/Calendar/Calendar";
 export default function EditionDetails() {
   const router = useRouter();
 
-  const { data } = trpc.event.get.useQuery();
+  const { data } = trpc.event.getByEditionId.useQuery(String(router.query.slug));
 
   const [calendarDate, setCalendarDate] = useState();
 
