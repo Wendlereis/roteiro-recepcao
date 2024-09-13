@@ -42,7 +42,7 @@ export default function CreateEdition() {
             <Input.Date name="endDate" label="Domingo" defaultValue={null} />
 
             <Stack direction="row" justifyContent="flex-end">
-              <Button sx={{ mt: 4 }} type="submit" variant="contained">
+              <Button sx={{ mt: 4 }} type="submit" variant="contained" color="secondary">
                 Adicionar
               </Button>
             </Stack>

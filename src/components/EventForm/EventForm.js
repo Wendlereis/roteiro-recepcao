@@ -13,11 +13,16 @@ import { Input } from "../Input";
 export function EventForm({ mode = "create", onSubmit, defaultValues }) {
   const methods = useForm();
 
-  const { data: getCategoriesResponse } = useQuery(["categories"], getCategories);
+  const { data: getCategoriesResponse } = useQuery(
+    ["categories"],
+    getCategories
+  );
 
   const edition = trpc.edition.getByActive.useQuery();
 
-  const updatedAtFormatted = mode === "edit" && format(parseISO(defaultValues?.updatedAt), "dd/MM/yyyy hh:mm");
+  const updatedAtFormatted =
+    mode === "edit" &&
+    format(parseISO(defaultValues?.updatedAt), "dd/MM/yyyy HH:mm");
 
   function getDefaultValueOrNull(value) {
     return value ? value : null;
@@ -33,9 +38,18 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <Input name="title" label="Nome do evento" defaultValue={getDefaultValueOrNull(defaultValues?.title)} />
+        <Input
+          name="title"
+          label="Nome do evento"
+          defaultValue={getDefaultValueOrNull(defaultValues?.title)}
+        />
 
-        <Input name="color" label="Categoria" defaultValue={getDefaultValueOrNull(defaultValues?.color)} select>
+        <Input
+          name="color"
+          label="Categoria"
+          defaultValue={getDefaultValueOrNull(defaultValues?.color)}
+          select
+        >
           {getCategoriesResponse?.data?.map((category) => (
             <MenuItem key={category.color} value={category.color}>
               {category.name}
@@ -43,7 +57,12 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
           ))}
         </Input>
 
-        <Input name="day" label="Dia" defaultValue={getDefaultValueOrNull(defaultValues?.day)} select>
+        <Input
+          name="day"
+          label="Dia"
+          defaultValue={getDefaultValueOrNull(defaultValues?.day)}
+          select
+        >
           <MenuItem key={startDateValue} value={startDateValue}>
             Sábado
           </MenuItem>
@@ -53,9 +72,19 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
           </MenuItem>
         </Input>
 
-        <Input.Time name="startDate" label="Início" defaultValue={getDefaultValueOrNull(defaultValues?.startDate)} />
+        <Stack direction="row" gap={2}>
+          <Input.Time
+            name="startDate"
+            label="Início"
+            defaultValue={getDefaultValueOrNull(defaultValues?.startDate)}
+          />
 
-        <Input.Time name="endDate" label="Fim" defaultValue={getDefaultValueOrNull(defaultValues?.endDate)} />
+          <Input.Time
+            name="endDate"
+            label="Fim"
+            defaultValue={getDefaultValueOrNull(defaultValues?.endDate)}
+          />
+        </Stack>
 
         {mode === "edit" && (
           <Box mt={3}>
@@ -69,14 +98,24 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
           </Box>
         )}
 
-        <Stack direction="row" justifyContent="flex-end" alignItems="center" mt={4} mb={6}>
+        <Stack
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="center"
+          mt={4}
+          mb={6}
+        >
           {mode === "edit" && (
-            <Typography sx={{ fontStyle: "italic", mr: 2 }} variant="caption" color="text.secondary">
+            <Typography
+              sx={{ fontStyle: "italic", mr: 2 }}
+              variant="caption"
+              color="text.secondary"
+            >
               Alterado por: {defaultValues.author} - {updatedAtFormatted}
             </Typography>
           )}
 
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" color="secondary">
             Salvar
           </Button>
         </Stack>

@@ -16,7 +16,10 @@ import { useUsers } from "../../hook/useUsers";
 
 const schema = yup.object({
   name: yup.string().required("Campo obrigatório"),
-  email: yup.string().email("Insira um e-mail válido").required("Campo obrigatório"),
+  email: yup
+    .string()
+    .email("Insira um e-mail válido")
+    .required("Campo obrigatório"),
   role: yup.string().required("Campo obrigatório"),
 });
 
@@ -32,7 +35,8 @@ export default function CreateUser() {
   const addUserMutation = useMutation(createUser);
 
   const hasManagerSeatsAvailable = users?.managers.metadata.seatsAvailable;
-  const hasTeamMemberSeatsAvailable = users?.teamMembers.metadata.seatsAvailable;
+  const hasTeamMemberSeatsAvailable =
+    users?.teamMembers.metadata.seatsAvailable;
 
   async function onSubmit(values) {
     await addUserMutation.mutateAsync(values);
@@ -56,12 +60,21 @@ export default function CreateUser() {
             <Input name="email" label="E-mail" />
 
             <Input name="role" label="Permissão" select>
-              {hasManagerSeatsAvailable && <MenuItem value="dirigente">Dirigente</MenuItem>}
-              {hasTeamMemberSeatsAvailable && <MenuItem value="equipista">Equipista</MenuItem>}
+              {hasManagerSeatsAvailable && (
+                <MenuItem value="dirigente">Dirigente</MenuItem>
+              )}
+              {hasTeamMemberSeatsAvailable && (
+                <MenuItem value="equipista">Equipista</MenuItem>
+              )}
             </Input>
 
             <Stack direction="row" justifyContent="flex-end">
-              <Button sx={{ mt: 4 }} type="submit" variant="contained">
+              <Button
+                sx={{ mt: 4 }}
+                type="submit"
+                variant="contained"
+                color="secondary"
+              >
                 Adicionar
               </Button>
             </Stack>
