@@ -8,10 +8,11 @@ import {
   Avatar,
   Box,
   Button,
+  Chip,
   Divider,
   Drawer,
   IconButton,
-  ListItem,
+  List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -19,7 +20,14 @@ import {
   Typography,
 } from "@mui/material";
 
-import { MenuRounded, LoginRounded, LogoutRounded } from "@mui/icons-material";
+import {
+  MenuRounded,
+  LoginRounded,
+  LogoutRounded,
+  TodayRounded,
+  EventRepeatRounded,
+  PeopleAltRounded,
+} from "@mui/icons-material";
 
 import { usePermission } from "../../hook/usePermission";
 import { useRouter } from "next/router";
@@ -29,7 +37,7 @@ export function Menu({ label }) {
 
   const { push } = useRouter();
 
-  const { isAdmin, isManager } = usePermission();
+  const { isAdmin, isManager, isTeamMember } = usePermission();
 
   const [isOpen, setIsOpen] = useState();
 
@@ -50,7 +58,10 @@ export function Menu({ label }) {
 
   return (
     <>
-      <AppBar position="sticky" sx={{ bgcolor: 'common.white', color: 'text.primary' }}>
+      <AppBar
+        position="sticky"
+        sx={{ bgcolor: "common.white", color: "text.primary" }}
+      >
         <Toolbar>
           <Box
             display="flex"
@@ -113,46 +124,71 @@ export function Menu({ label }) {
           }}
         >
           <Avatar src={data?.user?.image} />
+
           <Typography variant="h5" color="common.white" sx={{ mt: 2 }}>
             {data?.user.name}
           </Typography>
+
+          {isManager && (
+            <Chip
+              sx={{ mt: 0.5 }}
+              label="Dirigente"
+              color="secondary"
+              size="small"
+            />
+          )}
+
+          {isTeamMember && (
+            <Chip
+              sx={{ mt: 0.5 }}
+              label="Equipista da recepção"
+              color="secondary"
+              size="small"
+            />
+          )}
         </Box>
 
         <Divider />
 
         {isManager && (
-          <>
-            <ListItem>
-              <ListItemButton>
-                <Link href="/">
-                  <ListItemText primary="Roteiro" />
-                </Link>
-              </ListItemButton>
-            </ListItem>
+          <List>
+            <ListItemButton>
+              <ListItemIcon>
+                <TodayRounded />
+              </ListItemIcon>
 
-            <ListItem>
-              <ListItemButton>
-                <Link href="/editions">
-                  <ListItemText primary="Encontros" />
-                </Link>
-              </ListItemButton>
-            </ListItem>
+              <Link href="/">
+                <ListItemText primary="Roteiro" />
+              </Link>
+            </ListItemButton>
 
-            <ListItem>
-              <ListItemButton>
-                <Link href="/users">
-                  <ListItemText primary="Usuários" />
-                </Link>
-              </ListItemButton>
-            </ListItem>
-          </>
+            <ListItemButton>
+              <ListItemIcon>
+                <EventRepeatRounded />
+              </ListItemIcon>
+
+              <Link href="/editions">
+                <ListItemText primary="Encontros" />
+              </Link>
+            </ListItemButton>
+
+            <ListItemButton>
+              <ListItemIcon>
+                <PeopleAltRounded />
+              </ListItemIcon>
+
+              <Link href="/users">
+                <ListItemText primary="Usuários" />
+              </Link>
+            </ListItemButton>
+          </List>
         )}
 
         {isAuthenticated && (
           <>
             <Divider />
 
-            <ListItem>
+            <List>
               <ListItemButton onClick={handleOnSignOutClick}>
                 <ListItemIcon>
                   <LogoutRounded color="error" />
@@ -163,7 +199,7 @@ export function Menu({ label }) {
                   primaryTypographyProps={{ color: "error", fontWeight: 500 }}
                 />
               </ListItemButton>
-            </ListItem>
+            </List>
           </>
         )}
       </Drawer>
