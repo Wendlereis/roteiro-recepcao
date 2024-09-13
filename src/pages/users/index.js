@@ -66,6 +66,7 @@ export default function Users() {
 
               <IconButton
                 size="small"
+                color="error"
                 onClick={handleOnDeleteUser(manager._id)}
               >
                 <PersonRemoveAlt1Rounded />
@@ -94,9 +95,10 @@ export default function Users() {
 
               <IconButton
                 size="small"
+                color="error"
                 onClick={handleOnDeleteUser(teamMember._id)}
               >
-                <PersonRemoveAlt1Rounded color="action" />
+                <PersonRemoveAlt1Rounded />
               </IconButton>
             </ListItem>
           ))}
