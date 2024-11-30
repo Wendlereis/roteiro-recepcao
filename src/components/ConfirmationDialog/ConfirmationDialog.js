@@ -1,6 +1,13 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
-export function ConfirmationDialog({ open, onConfirm, onClose }) {
+export function ConfirmationDialog({ open, onConfirm, onClose, isLoading }) {
   return (
     <Dialog open={open}>
       <DialogTitle>Confirmar novos dados?</DialogTitle>
@@ -12,9 +19,11 @@ export function ConfirmationDialog({ open, onConfirm, onClose }) {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
-        <Button onClick={onConfirm} autoFocus>
-          Aceitar
+        <Button onClick={onClose} disabled={isLoading}>
+          Cancelar
+        </Button>
+        <Button onClick={onConfirm} disabled={isLoading} autoFocus>
+          {isLoading ? "Salvando..." : "Aceitar"}
         </Button>
       </DialogActions>
     </Dialog>

@@ -16,7 +16,12 @@ import { buildEventDate, removeSeconds } from "../../ultis/date";
 import { EventForm } from "../../components/EventForm";
 import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
-import { deleteEvent, editEvent, editEventsDuration, getEventById } from "../../api/event";
+import {
+  deleteEvent,
+  editEvent,
+  editEventsDuration,
+  getEventById,
+} from "../../api/event";
 import { DeleteEventDialog } from "../../components/DeleteEventDialog";
 
 export default function Edit() {
@@ -28,13 +33,25 @@ export default function Edit() {
 
   const { data: session } = useSession();
 
-  const { data: getEventResponse } = useQuery(["event", query.id], () => getEventById({ id: query.id }));
+  const { data: getEventResponse } = useQuery(["event", query.id], () =>
+    getEventById({ id: query.id })
+  );
 
   const editEventMutation = useMutation(editEvent);
 
   const deleteEventMutation = useMutation(deleteEvent);
 
   const editEventsDurationMutation = useMutation(editEventsDuration);
+
+  const { isLoading: isEditEventsMutation } = editEventMutation;
+  const { isLoading: isEditEventsDurationMutation } =
+    editEventsDurationMutation;
+  const { isLoading: isDeleteEventMutation } = deleteEventMutation;
+
+  const isMutationLoading =
+    isEditEventsMutation ||
+    isEditEventsDurationMutation ||
+    isDeleteEventMutation;
 
   function toggleDialog() {
     setIsDialogOpen(!isDialogOpen);
@@ -61,8 +78,14 @@ export default function Edit() {
     const data = {
       ...values,
       id: getEventResponse.data._id,
-      startDate: buildEventDate(values.day, removeSeconds(new Date(values.startDate))),
-      endDate: buildEventDate(values.day, removeSeconds(new Date(values.endDate))),
+      startDate: buildEventDate(
+        values.day,
+        removeSeconds(new Date(values.startDate))
+      ),
+      endDate: buildEventDate(
+        values.day,
+        removeSeconds(new Date(values.endDate))
+      ),
       author: session?.user?.name,
       updatedAt: new Date().toISOString(),
     };
@@ -89,12 +112,22 @@ export default function Edit() {
         <Toolbar>
           <Box display="flex" justifyContent="space-between" width="100%">
             <Link href="/">
-              <IconButton component="a" size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
+              <IconButton
+                component="a"
+                size="large"
+                edge="start"
+                color="inherit"
+                sx={{ mr: 2 }}
+              >
                 <ArrowBackRounded />
               </IconButton>
             </Link>
 
-            <IconButton onClick={toggleDeleteDialog} size="large" color="inherit">
+            <IconButton
+              onClick={toggleDeleteDialog}
+              size="large"
+              color="inherit"
+            >
               <DeleteRounded />
             </IconButton>
           </Box>
@@ -103,18 +136,34 @@ export default function Edit() {
 
       <Box bgcolor="background.default" p={2}>
         <Typography variant="h3">Editar evento</Typography>
-        <Typography color="text.secondary">Altere acessos, palestras ou peças</Typography>
+        <Typography color="text.secondary">
+          Altere acessos, palestras ou peças
+        </Typography>
 
         {getEventResponse?.data && (
           <Box mt={1}>
-            <EventForm mode="edit" onSubmit={handleSubmit} defaultValues={getEventResponse?.data} />
+            <EventForm
+              mode="edit"
+              onSubmit={handleSubmit}
+              defaultValues={getEventResponse?.data}
+            />
           </Box>
         )}
       </Box>
 
-      <ConfirmationDialog open={isDialogOpen} onConfirm={handleSave} onClose={toggleDialog} />
+      <ConfirmationDialog
+        open={isDialogOpen}
+        onConfirm={handleSave}
+        onClose={toggleDialog}
+        isLoading={isMutationLoading}
+      />
 
-      <DeleteEventDialog open={isDeleteDialogOpen} onConfirm={handleDeleteOnConfirm} onClose={toggleDeleteDialog} />
+      <DeleteEventDialog
+        open={isDeleteDialogOpen}
+        onConfirm={handleDeleteOnConfirm}
+        onClose={toggleDeleteDialog}
+        isLoading={isMutationLoading}
+      />
     </Box>
   );
 }
