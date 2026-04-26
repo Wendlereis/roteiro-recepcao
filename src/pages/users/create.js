@@ -18,6 +18,8 @@ const schema = yup.object({
   name: yup.string().required("Campo obrigatório"),
   email: yup
     .string()
+    .trim()
+    .lowercase()
     .email("Insira um e-mail válido")
     .required("Campo obrigatório"),
   role: yup.string().required("Campo obrigatório"),

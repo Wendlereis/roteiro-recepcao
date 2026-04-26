@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { useMutation } from "@tanstack/react-query";
 
 import {
@@ -26,24 +28,56 @@ import { usePermission } from "../../hook/usePermission";
 export default function Users() {
   const { users, refetch } = useUsers();
 
-  const { isAdmin } = usePermission();
+  const { isAdmin, isManager } = usePermission();
+
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
 
   const isCreateEnabled =
     isAdmin &&
     (users?.managers.metadata.seatsAvailable ||
       users?.teamMembers.metadata.seatsAvailable);
 
+  const hasSingleManager = users?.managers?.metadata?.size <= 1;
+
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
+      setDeleteErrorMessage("");
       refetch();
+    },
+    onError: (error) => {
+      const status = error?.response?.status;
+
+      if (status === 409) {
+        return setDeleteErrorMessage(
+          "Não é possível remover o último dirigente do sistema.",
+        );
+      }
+
+      if (status === 403) {
+        return setDeleteErrorMessage(
+          "Apenas dirigentes podem excluir usuários.",
+        );
+      }
+
+      setDeleteErrorMessage("Não foi possível excluir o usuário.");
     },
   });
 
-  function handleOnDeleteUser(id) {
+  function handleOnDeleteUser(user) {
     return async () => {
-      await deleteUserMutation.mutateAsync({ id });
+      setDeleteErrorMessage("");
+
+      await deleteUserMutation.mutateAsync({ id: user._id });
     };
+  }
+
+  function isDeleteDisabled(user) {
+    if (!isManager) {
+      return true;
+    }
+
+    return user.role === "dirigente" && hasSingleManager;
   }
 
   return (
@@ -54,6 +88,12 @@ export default function Users() {
         <Typography variant="h4" sx={{ mt: 4 }}>
           Usuários
         </Typography>
+
+        {!!deleteErrorMessage && (
+          <Typography variant="body2" color="error.main" sx={{ mt: 2 }}>
+            {deleteErrorMessage}
+          </Typography>
+        )}
 
         <Typography variant="h6" sx={{ mt: 3 }}>
           Dirigentes
@@ -67,7 +107,8 @@ export default function Users() {
               <IconButton
                 size="small"
                 color="primary"
-                onClick={handleOnDeleteUser(manager._id)}
+                onClick={handleOnDeleteUser(manager)}
+                disabled={isDeleteDisabled(manager)}
               >
                 <PersonRemoveAlt1Rounded />
               </IconButton>
@@ -96,7 +137,8 @@ export default function Users() {
               <IconButton
                 size="small"
                 color="primary"
-                onClick={handleOnDeleteUser(teamMember._id)}
+                onClick={handleOnDeleteUser(teamMember)}
+                disabled={isDeleteDisabled(teamMember)}
               >
                 <PersonRemoveAlt1Rounded />
               </IconButton>
