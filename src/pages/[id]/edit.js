@@ -9,19 +9,12 @@ import { addMinutes } from "date-fns";
 import { ArrowBackRounded, DeleteRounded } from "@mui/icons-material";
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
-
 import { buildEventDate, removeSeconds } from "../../ultis/date";
+
+import { trpc } from "../../ultis/trpc";
 
 import { EventForm } from "../../components/EventForm";
 import { ConfirmationDialog } from "../../components/ConfirmationDialog";
-
-import {
-  deleteEvent,
-  editEvent,
-  editEventsDuration,
-  getEventById,
-} from "../../api/event";
 import { DeleteEventDialog } from "../../components/DeleteEventDialog";
 
 export default function Edit() {
@@ -33,15 +26,15 @@ export default function Edit() {
 
   const { data: session } = useSession();
 
-  const { data: getEventResponse } = useQuery(["event", query.id], () =>
-    getEventById({ id: query.id })
-  );
+  const { data: event } = trpc.event.getById.useQuery(String(query.id), {
+    enabled: !!query.id,
+  });
 
-  const editEventMutation = useMutation(editEvent);
+  const editEventMutation = trpc.event.edit.useMutation();
 
-  const deleteEventMutation = useMutation(deleteEvent);
+  const deleteEventMutation = trpc.event.delete.useMutation();
 
-  const editEventsDurationMutation = useMutation(editEventsDuration);
+  const editEventsDurationMutation = trpc.event.editDuration.useMutation();
 
   const { isLoading: isEditEventsMutation } = editEventMutation;
   const { isLoading: isEditEventsDurationMutation } =
@@ -68,7 +61,7 @@ export default function Edit() {
 
   async function handleDeleteOnConfirm() {
     await deleteEventMutation.mutateAsync({
-      id: getEventResponse.data._id,
+      id: event._id,
     });
 
     push("/");
@@ -77,7 +70,7 @@ export default function Edit() {
   async function handleSave() {
     const data = {
       ...values,
-      id: getEventResponse.data._id,
+      id: event._id,
       startDate: buildEventDate(
         values.day,
         removeSeconds(new Date(values.startDate))
@@ -140,12 +133,12 @@ export default function Edit() {
           Altere acessos, palestras ou peças
         </Typography>
 
-        {getEventResponse?.data && (
+        {event && (
           <Box mt={1}>
             <EventForm
               mode="edit"
               onSubmit={handleSubmit}
-              defaultValues={getEventResponse?.data}
+              defaultValues={event}
             />
           </Box>
         )}

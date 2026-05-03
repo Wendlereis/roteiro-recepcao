@@ -1,11 +1,8 @@
 import { format, parseISO } from "date-fns";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { useQuery } from "@tanstack/react-query";
-
 import { Box, Button, Stack, Typography, MenuItem } from "@mui/material";
 
-import { getCategories } from "../../api/category";
 import { trpc } from "../../ultis/trpc";
 
 import { Input } from "../Input";
@@ -13,10 +10,7 @@ import { Input } from "../Input";
 export function EventForm({ mode = "create", onSubmit, defaultValues }) {
   const methods = useForm();
 
-  const { data: getCategoriesResponse } = useQuery(
-    ["categories"],
-    getCategories
-  );
+  const categories = trpc.category.get.useQuery();
 
   const edition = trpc.edition.getByActive.useQuery();
 
@@ -50,7 +44,7 @@ export function EventForm({ mode = "create", onSubmit, defaultValues }) {
           defaultValue={getDefaultValueOrNull(defaultValues?.color)}
           select
         >
-          {getCategoriesResponse?.data?.map((category) => (
+          {categories.data?.map((category) => (
             <MenuItem key={category.color} value={category.color}>
               {category.name}
             </MenuItem>

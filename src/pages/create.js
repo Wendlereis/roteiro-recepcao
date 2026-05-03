@@ -5,11 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
-import { useMutation } from "@tanstack/react-query";
+import { trpc } from "../ultis/trpc";
 
 import { EventForm } from "../components/EventForm";
-
-import { createEvent } from "../api/event";
 
 import { buildEventDate, removeSeconds } from "../ultis/date";
 
@@ -18,7 +16,7 @@ export default function Create() {
 
   const { data: session } = useSession();
 
-  const createEventMutation = useMutation(createEvent);
+  const createEventMutation = trpc.event.create.useMutation();
 
   async function handleSave(values) {
     const data = {

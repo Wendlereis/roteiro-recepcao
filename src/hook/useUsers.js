@@ -1,12 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../api/user";
+import { trpc } from "../ultis/trpc";
 
 export function useUsers() {
-  const query = useQuery(["users"], getUsers);
+  const query = trpc.user.get.useQuery();
 
   const { refetch } = query;
 
-  const data = query.data?.data;
+  const data = query.data;
 
   return { users: data, refetch };
 }
