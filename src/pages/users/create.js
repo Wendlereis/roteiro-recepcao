@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import * as yup from "yup";
 
 import { Button, Container, MenuItem, Stack, Typography } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { FormProvider, useForm } from "react-hook-form";
@@ -11,7 +10,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Menu } from "../../components/Menu/Menu";
 import { Input } from "../../components/Input";
 
-import { createUser } from "../../api/user";
+import { trpc } from "../../ultis/trpc";
 import { useUsers } from "../../hook/useUsers";
 
 const schema = yup.object({
@@ -34,7 +33,7 @@ export default function CreateUser() {
 
   const { push } = useRouter();
 
-  const addUserMutation = useMutation(createUser);
+  const addUserMutation = trpc.user.create.useMutation();
 
   const hasManagerSeatsAvailable = users?.managers.metadata.seatsAvailable;
   const hasTeamMemberSeatsAvailable =

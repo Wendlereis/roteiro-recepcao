@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { useMutation } from "@tanstack/react-query";
-
 import {
   Container,
   Fab,
@@ -18,7 +16,7 @@ import {
   PersonAddAlt1Rounded,
 } from "@mui/icons-material";
 
-import { deleteUser, getUsers } from "../../api/user";
+import { trpc } from "../../ultis/trpc";
 
 import { useUsers } from "../../hook/useUsers";
 
@@ -39,22 +37,21 @@ export default function Users() {
 
   const hasSingleManager = users?.managers?.metadata?.size <= 1;
 
-  const deleteUserMutation = useMutation({
-    mutationFn: deleteUser,
+  const deleteUserMutation = trpc.user.delete.useMutation({
     onSuccess: () => {
       setDeleteErrorMessage("");
       refetch();
     },
     onError: (error) => {
-      const status = error?.response?.status;
+      const code = error?.data?.code;
 
-      if (status === 409) {
+      if (code === "CONFLICT") {
         return setDeleteErrorMessage(
           "Não é possível remover o último dirigente do sistema.",
         );
       }
 
-      if (status === 403) {
+      if (code === "FORBIDDEN") {
         return setDeleteErrorMessage(
           "Apenas dirigentes podem excluir usuários.",
         );
